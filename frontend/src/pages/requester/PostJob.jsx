@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { postJob, validateAddress } from '../../services/api'
 import useAuth from '../../hooks/useAuth'
 import Modal from '../../components/Modal'
+import { useMock } from '../../context/MockStateContext'
 
 const SERVICES = [
   {
@@ -67,6 +68,22 @@ export default function PostJob() {
     propertyType: 'House', driveSize: 'Medium',
     services: {}, schedule: 'asap', date: '', time: '', notes: '',
   })
+
+  const { mockUser } = useMock()
+  const reqPhotoInputRef = useRef(null)
+  // null = not yet initialised; initialised when user first reaches Step 3
+  const [selectedPropPhotos, setSelectedPropPhotos] = useState(null)
+  const [reqPhotos, setReqPhotos] = useState([]) // [{ file: File, url: string }]
+  const [photoError, setPhotoError] = useState(null)
+
+  // Revoke all object URLs created for per-request photo previews when the
+  // component unmounts, to prevent memory leaks from retained blob references.
+  useEffect(() => {
+    return () => {
+      reqPhotos.forEach(p => URL.revokeObjectURL(p.url))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Assemble the full address string for the API and review screen.
   // When using home address, we use the stored profile value directly.
@@ -192,7 +209,7 @@ export default function PostJob() {
       return
     }
     setErrors({})
-    setStep(3)
+    goToStep3()
   }
 
   async function submit() {
@@ -227,6 +244,11 @@ export default function PostJob() {
           ? new Date(`${form.date}T${form.time}:00`).toISOString()
           : null
 
+      const photoUrls = [
+        ...(selectedPropPhotos ? [...selectedPropPhotos] : mockUser.propertyPhotos),
+        ...reqPhotos.map(p => p.url),
+      ]
+
       const job = await postJob({
         scope,
         propertyAddressText:  fullAddress,
@@ -235,6 +257,7 @@ export default function PostJob() {
         notesForWorker,
         personalWorkerOnly:   false,
         postedPriceCents:     postedPrice,
+        photoUrls,
       })
 
       navigate(`/requester/jobs/${job.jobId}`)
@@ -253,6 +276,60 @@ export default function PostJob() {
       setSubmitting(false)
     }
   }
+
+  function togglePropPhoto(url) {
+    setSelectedPropPhotos(prev => {
+      const next = new Set(prev)
+      if (next.has(url)) next.delete(url)
+      else next.add(url)
+      return next
+    })
+  }
+
+  function handleReqPhotoChange(e) {
+    const files = Array.from(e.target.files)
+    e.target.value = ''
+    const remaining = 3 - reqPhotos.length
+    const candidates = files.slice(0, remaining)
+    const oversized = []
+    const valid = []
+    for (const f of candidates) {
+      if (f.size > 10 * 1024 * 1024) oversized.push(f.name)
+      else valid.push({ file: f, url: URL.createObjectURL(f) })
+    }
+    if (oversized.length) setPhotoError(`Skipped (over 10 MB): ${oversized.join(', ')}`)
+    else setPhotoError(null)
+    setReqPhotos(prev => [...prev, ...valid].slice(0, 3))
+  }
+
+  function removeReqPhoto(index) {
+    setReqPhotos(prev => {
+      URL.revokeObjectURL(prev[index].url)
+      return prev.filter((_, i) => i !== index)
+    })
+  }
+
+  function goToStep3() {
+    // Initialise property photo selection to "all selected" on first visit
+    if (selectedPropPhotos === null) {
+      setSelectedPropPhotos(new Set(mockUser.propertyPhotos))
+    }
+    setStep(3)
+  }
+
+  function goToStep4() {
+    const totalPhotos = (selectedPropPhotos ? selectedPropPhotos.size : mockUser.propertyPhotos.length) + reqPhotos.length
+    if (totalPhotos === 0) {
+      setPhotoError('Add at least 1 photo to continue.')
+      return
+    }
+    setPhotoError(null)
+    setStep(4)
+  }
+
+  const totalPhotoCount =
+    (selectedPropPhotos ? selectedPropPhotos.size : mockUser.propertyPhotos.length) +
+    reqPhotos.length
 
   const StepCircle = ({ n }) => (
     <div className={`step-circle ${step > n ? 'done' : step === n ? 'active' : ''}`}>
@@ -522,10 +599,141 @@ export default function PostJob() {
             <textarea className="input" rows={3} placeholder="Gate code, dog in yard, access instructions…" value={form.notes} onChange={e => set('notes', e.target.value)} maxLength={500} />
             <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', textAlign: 'right' }}>{form.notes.length}/500</span>
           </div>
+
+          {/* ── Photos ─────────────────────────────── */}
+          <div style={{ borderTop: '1px solid var(--gray-200)', paddingTop: 'var(--sp-4)', marginTop: 'var(--sp-4)' }}>
+
+            {/* Sub-section A: saved property photos */}
+            {mockUser.propertyPhotos.length > 0 && (
+              <div style={{ marginBottom: 'var(--sp-5)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--sp-1)' }}>
+                  <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--gray-600)' }}>
+                    🏠 Your property photos
+                  </span>
+                  <a
+                    href="/requester/property"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontSize: 'var(--font-size-xs)', color: 'var(--blue)', fontWeight: 600, textDecoration: 'none' }}
+                  >
+                    Manage →
+                  </a>
+                </div>
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-500)', marginBottom: 'var(--sp-3)' }}>
+                  All selected by default. Tap any to leave out.
+                </p>
+                <div style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
+                  {mockUser.propertyPhotos.map(url => {
+                    const selected = selectedPropPhotos ? selectedPropPhotos.has(url) : true
+                    return (
+                      <button
+                        key={url}
+                        onClick={() => togglePropPhoto(url)}
+                        aria-label={selected ? 'Deselect photo' : 'Select photo'}
+                        style={{
+                          position: 'relative', width: 68, height: 68, padding: 0, flexShrink: 0,
+                          border: selected ? '2px solid var(--blue)' : '2px solid var(--gray-300)',
+                          borderRadius: 'var(--radius-lg)', cursor: 'pointer', background: 'none',
+                          opacity: selected ? 1 : 0.45,
+                        }}
+                      >
+                        <img
+                          src={url}
+                          alt="Property"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'calc(var(--radius-lg) - 2px)', display: 'block' }}
+                        />
+                        <span style={{
+                          position: 'absolute', top: -6, right: -6, width: 20, height: 20,
+                          borderRadius: '50%', background: selected ? 'var(--blue)' : 'var(--gray-400)',
+                          border: '2px solid #fff', color: '#fff',
+                          fontSize: 11, fontWeight: 700,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}>
+                          {selected ? '✓' : '✕'}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Sub-section B: per-request uploads */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 'var(--sp-2)', marginBottom: 'var(--sp-1)' }}>
+                <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--gray-600)' }}>
+                  📷 Add photos for this request
+                </span>
+                <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)' }}>(optional)</span>
+              </div>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-500)', marginBottom: 'var(--sp-3)' }}>
+                Show current conditions — fresh snow, problem areas, etc. Up to 3.
+              </p>
+              <div style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap', marginBottom: 'var(--sp-2)' }}>
+                {reqPhotos.map((p, i) => (
+                  <div key={p.url} style={{ position: 'relative', width: 68, height: 68, flexShrink: 0 }}>
+                    <img
+                      src={p.url}
+                      alt={`Request photo ${i + 1}`}
+                      style={{ width: 68, height: 68, objectFit: 'cover', borderRadius: 'var(--radius-lg)', border: '1px solid var(--gray-200)', display: 'block' }}
+                    />
+                    <button
+                      onClick={() => removeReqPhoto(i)}
+                      aria-label="Remove photo"
+                      style={{
+                        position: 'absolute', top: 3, right: 3, width: 18, height: 18,
+                        borderRadius: '50%', background: 'rgba(0,0,0,0.55)', border: 'none',
+                        color: '#fff', fontSize: 10, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
+                      }}
+                    >✕</button>
+                  </div>
+                ))}
+                {reqPhotos.length < 3 && (
+                  <button
+                    onClick={() => { setPhotoError(null); reqPhotoInputRef.current?.click() }}
+                    style={{
+                      width: 68, height: 68, borderRadius: 'var(--radius-lg)',
+                      border: '2px dashed var(--blue)', background: 'var(--blue-light)',
+                      cursor: 'pointer', display: 'flex', flexDirection: 'column',
+                      alignItems: 'center', justifyContent: 'center', gap: 2, color: 'var(--blue)',
+                    }}
+                  >
+                    <span style={{ fontSize: 20 }}>+</span>
+                    <span style={{ fontSize: 10, fontWeight: 600 }}>Add Photo</span>
+                  </button>
+                )}
+              </div>
+              <input
+                ref={reqPhotoInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                style={{ display: 'none' }}
+                onChange={handleReqPhotoChange}
+              />
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)' }}>
+                {reqPhotos.length} of 3 · JPG, PNG, WEBP · max 10 MB each
+              </p>
+            </div>
+
+            {/* Validation error */}
+            {photoError && (
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--red)', marginTop: 'var(--sp-3)' }}>
+                ⚠ {photoError}
+              </p>
+            )}
+          </div>
+
           <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
             <button className="btn btn-ghost" onClick={() => setStep(2)}>← Back</button>
-            <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => setStep(4)}>Review →</button>
+            <button className="btn btn-primary" style={{ flex: 1 }} onClick={goToStep4}>Review →</button>
           </div>
+          {totalPhotoCount > 0 && (
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-500)', textAlign: 'center', marginTop: 'var(--sp-2)' }}>
+              {totalPhotoCount} photo{totalPhotoCount !== 1 ? 's' : ''} will be included with this job
+            </p>
+          )}
         </div>
       )}
 
