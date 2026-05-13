@@ -57,6 +57,8 @@ export default function JobRequest() {
   const [counterPrice, setCounterPrice] = useState('')
   const [counterNote, setCounterNote] = useState('')
   const [submitting, setSubmitting] = useState(null) // jobId being acted on
+  // null when closed; { photos: string[], index: number } when open
+  const [photoModal, setPhotoModal] = useState(null)
 
   const uid = currentUser?.uid
 
@@ -291,6 +293,45 @@ export default function JobRequest() {
               {job.notesForWorker && (
                 <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-600)', marginBottom: 'var(--sp-3)' }}>{job.notesForWorker}</p>
               )}
+              {/* Photo strip */}
+              {job.photoUrls?.length > 0 && (
+                <div style={{ borderTop: '1px solid var(--gray-100)', paddingTop: 'var(--sp-2)', marginTop: 'var(--sp-2)', marginBottom: 'var(--sp-2)' }}>
+                  <p style={{
+                    fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)',
+                    fontWeight: 600, letterSpacing: '0.06em',
+                    marginBottom: 'var(--sp-2)',
+                  }}>
+                    PHOTOS
+                  </p>
+                  <div style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
+                    {job.photoUrls.slice(0, 5).map((url, i) => (
+                      <button
+                        key={url}
+                        onClick={() => setPhotoModal({ photos: job.photoUrls, index: i })}
+                        style={{ padding: 0, border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', background: 'none', flexShrink: 0 }}
+                      >
+                        <img
+                          src={url}
+                          alt={`Job photo ${i + 1}`}
+                          style={{ width: 56, height: 56, objectFit: 'cover', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)', display: 'block' }}
+                        />
+                      </button>
+                    ))}
+                    {job.photoUrls.length > 5 && (
+                      <button
+                        onClick={() => setPhotoModal({ photos: job.photoUrls, index: 5 })}
+                        style={{
+                          width: 56, height: 56, borderRadius: 'var(--radius-md)',
+                          background: 'var(--gray-200)', border: 'none', cursor: 'pointer',
+                          fontSize: 'var(--font-size-xs)', fontWeight: 700, color: 'var(--gray-600)',
+                        }}
+                      >
+                        +{job.photoUrls.length - 5}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
               <div style={{ display: 'flex', gap: 'var(--sp-2)' }}>
                 <button className="btn btn-primary" disabled={submitting === job.jobId}
                   onClick={() => openCounterModal(job.jobId, job.postedPriceCents ?? 0, 'new')}
@@ -394,6 +435,50 @@ export default function JobRequest() {
           </div>
         )}
       </Modal>
+
+      {/* Full-size photo modal */}
+      {photoModal && (
+        <Modal
+          isOpen={true}
+          onClose={() => setPhotoModal(null)}
+          title={`Photo ${photoModal.index + 1} of ${photoModal.photos.length}`}
+        >
+          <div style={{ background: '#111', borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+            <img
+              src={photoModal.photos[photoModal.index]}
+              alt={`Photo ${photoModal.index + 1}`}
+              style={{ width: '100%', maxHeight: '60vh', objectFit: 'contain', display: 'block' }}
+            />
+            {photoModal.photos.length > 1 && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--sp-3)' }}>
+                <button
+                  onClick={() => setPhotoModal(m => ({ ...m, index: Math.max(0, m.index - 1) }))}
+                  disabled={photoModal.index === 0}
+                  style={{
+                    background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 'var(--radius-md)',
+                    padding: 'var(--sp-2) var(--sp-3)', color: '#fff', cursor: 'pointer',
+                    fontWeight: 700, fontSize: 'var(--font-size-sm)',
+                    opacity: photoModal.index === 0 ? 0.3 : 1,
+                  }}
+                >← Prev</button>
+                <span style={{ color: '#ccc', fontSize: 'var(--font-size-xs)' }}>
+                  {photoModal.index + 1} / {photoModal.photos.length}
+                </span>
+                <button
+                  onClick={() => setPhotoModal(m => ({ ...m, index: Math.min(m.photos.length - 1, m.index + 1) }))}
+                  disabled={photoModal.index === photoModal.photos.length - 1}
+                  style={{
+                    background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 'var(--radius-md)',
+                    padding: 'var(--sp-2) var(--sp-3)', color: '#fff', cursor: 'pointer',
+                    fontWeight: 700, fontSize: 'var(--font-size-sm)',
+                    opacity: photoModal.index === photoModal.photos.length - 1 ? 0.3 : 1,
+                  }}
+                >Next →</button>
+              </div>
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   )
 }
