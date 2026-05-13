@@ -2,6 +2,14 @@ import { createContext, useContext, useState } from 'react'
 
 const Ctx = createContext(null)
 
+// Demo placeholder images used to seed the first job with sample property photos
+const DEMO_PHOTO_1 = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="96" height="96" fill="#7aa3c8"/><rect x="20" y="30" width="56" height="40" rx="4" fill="#fff" opacity="0.6"/><rect x="38" y="18" width="20" height="16" rx="2" fill="#fff" opacity="0.6"/></svg>'
+)
+const DEMO_PHOTO_2 = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96"><rect width="96" height="96" fill="#7ac87a"/><ellipse cx="48" cy="60" rx="30" ry="18" fill="#fff" opacity="0.5"/><rect x="30" y="30" width="36" height="24" rx="6" fill="#fff" opacity="0.5"/></svg>'
+)
+
 const MOCK_JOBS = [
   {
     jobId: 'SR-2026-001',
@@ -22,7 +30,7 @@ const MOCK_JOBS = [
     currentWorkerDistance: '1.4 km',
     createdAt: '2026-04-03T09:14:00Z',
     pendingApprovalAt: null,
-    photoUrls: [],
+    photoUrls: [DEMO_PHOTO_1, DEMO_PHOTO_2],
   },
   {
     jobId: 'SR-2026-002',
@@ -55,6 +63,8 @@ export function MockStateProvider({ children }) {
   const [role, setRole] = useState('REQUESTER')
   const [jobs, setJobs] = useState(MOCK_JOBS)
   const [nextId, setNextId] = useState(3)
+  // propertyPhotos holds the requester's saved property photo data URIs
+  const [propertyPhotos, setPropertyPhotos] = useState([])
 
   function setJobStatus(jobId, status) {
     setJobs(prev => prev.map(j => j.jobId === jobId ? {
@@ -91,7 +101,7 @@ export function MockStateProvider({ children }) {
   }
 
   return (
-    <Ctx.Provider value={{ role, setRole, jobs, setJobStatus, addJob, advanceJob, mockUser: MOCK_USER, mockWorker: MOCK_WORKER }}>
+    <Ctx.Provider value={{ role, setRole, jobs, setJobStatus, addJob, advanceJob, mockUser: { ...MOCK_USER, propertyPhotos }, mockWorker: MOCK_WORKER, setPropertyPhotos }}>
       {children}
     </Ctx.Provider>
   )
