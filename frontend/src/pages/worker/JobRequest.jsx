@@ -456,7 +456,8 @@ export default function JobRequest() {
                   disabled={photoModal.index === 0}
                   style={{
                     background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 'var(--radius-md)',
-                    padding: 'var(--sp-2) var(--sp-3)', color: '#fff', cursor: 'pointer',
+                    padding: 'var(--sp-2) var(--sp-3)', color: '#fff',
+                    cursor: photoModal.index === 0 ? 'default' : 'pointer',
                     fontWeight: 700, fontSize: 'var(--font-size-sm)',
                     opacity: photoModal.index === 0 ? 0.3 : 1,
                   }}
@@ -469,7 +470,8 @@ export default function JobRequest() {
                   disabled={photoModal.index === photoModal.photos.length - 1}
                   style={{
                     background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: 'var(--radius-md)',
-                    padding: 'var(--sp-2) var(--sp-3)', color: '#fff', cursor: 'pointer',
+                    padding: 'var(--sp-2) var(--sp-3)', color: '#fff',
+                    cursor: photoModal.index === photoModal.photos.length - 1 ? 'default' : 'pointer',
                     fontWeight: 700, fontSize: 'var(--font-size-sm)',
                     opacity: photoModal.index === photoModal.photos.length - 1 ? 0.3 : 1,
                   }}
