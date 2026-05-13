@@ -272,16 +272,16 @@ export default function JobRequest() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--sp-2)' }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontWeight: 700, fontSize: 15 }}>{job.propertyAddress?.fullText ?? 'Address pending'}</div>
-                  <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 4 }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)', marginTop: 'var(--sp-1)' }}>
                     {job.scope?.join(', ') ?? '—'}
                     {job.postedPriceCents ? ` · $${(job.postedPriceCents / 100).toFixed(2)} posted` : ''}
                   </div>
                 </div>
                 {job._distKm != null && (
                   <div style={{
-                    flexShrink: 0, marginLeft: 12,
+                    flexShrink: 0, marginLeft: 'var(--sp-3)',
                     background: 'var(--blue-light)', color: 'var(--blue-dark)',
-                    borderRadius: 12, padding: '2px 10px', fontSize: 12, fontWeight: 700,
+                    borderRadius: 'var(--radius-lg)', padding: '3px 15px', fontSize: 'var(--font-size-xs)', fontWeight: 700,
                     whiteSpace: 'nowrap',
                   }}>
                     {fmtDistance(job._distKm)}
@@ -289,7 +289,7 @@ export default function JobRequest() {
                 )}
               </div>
               {job.notesForWorker && (
-                <p style={{ fontSize: 13, color: 'var(--gray-600)', marginBottom: 'var(--sp-3)' }}>{job.notesForWorker}</p>
+                <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-600)', marginBottom: 'var(--sp-3)' }}>{job.notesForWorker}</p>
               )}
               <div style={{ display: 'flex', gap: 'var(--sp-2)' }}>
                 <button className="btn btn-primary" disabled={submitting === job.jobId}
@@ -313,9 +313,9 @@ export default function JobRequest() {
       {/* ── Empty state ─────────────────────────────────────────────────── */}
       {isEmpty && (
         <div className="card" style={{ textAlign: 'center', padding: 'var(--sp-10)', color: 'var(--gray-400)' }}>
-          <div style={{ fontSize: 48, marginBottom: 12 }}>🔔</div>
-          <p style={{ fontWeight: 600, marginBottom: 8 }}>No job opportunities right now</p>
-          <p style={{ fontSize: 14 }}>
+          <div style={{ fontSize: 72, marginBottom: 'var(--sp-3)' }}>🔔</div>
+          <p style={{ fontWeight: 600, marginBottom: 'var(--sp-2)' }}>No job opportunities right now</p>
+          <p style={{ fontSize: 'var(--font-size-sm)' }}>
             When a homeowner posts a job in your service area, you'll be notified here.
           </p>
         </div>
@@ -324,11 +324,11 @@ export default function JobRequest() {
       {/* ── Concluded offers (collapsed) ─────────────────────────────────── */}
       {doneOffers.length > 0 && (
         <section>
-          <h2 style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-400)', marginBottom: 'var(--sp-2)' }}>
+          <h2 style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--gray-400)', marginBottom: 'var(--sp-2)' }}>
             Concluded ({doneOffers.length})
           </h2>
           {doneOffers.map(offer => (
-            <div key={offer.id} className="card" style={{ padding: 'var(--sp-3) var(--sp-4)', marginBottom: 'var(--sp-2)', opacity: .65, display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
+            <div key={offer.id} className="card" style={{ padding: 'var(--sp-3) var(--sp-4)', marginBottom: 'var(--sp-2)', opacity: .65, display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-sm)' }}>
               <span style={{ color: 'var(--gray-600)' }}>{jobCache[offer.jobId]?.jobId ?? offer.jobId}</span>
               <span style={{ fontWeight: 600, color: offer.status === 'REJECTED' ? 'var(--red)' : 'var(--gray-400)' }}>
                 {offer.status}
@@ -348,22 +348,22 @@ export default function JobRequest() {
         {counterModal && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
             <div>
-              <label style={{ display: 'block', fontWeight: 600, fontSize: 14, marginBottom: 6 }}>
+              <label style={{ display: 'block', fontWeight: 600, fontSize: 'var(--font-size-sm)', marginBottom: 'var(--sp-2)' }}>
                 Your price (CAD)
               </label>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <span style={{ fontSize: 18, fontWeight: 700 }}>$</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                <span style={{ fontSize: 'var(--font-size-lg)', fontWeight: 700 }}>$</span>
                 <input
                   type="number"
                   min="1"
                   step="0.01"
                   value={counterPrice}
                   onChange={e => setCounterPrice(e.target.value)}
-                  style={{ flex: 1, padding: '10px 12px', fontSize: 18, fontWeight: 700, border: '2px solid var(--blue)', borderRadius: 8 }}
+                  style={{ flex: 1, padding: 'var(--sp-3) var(--sp-4)', fontSize: 'var(--font-size-lg)', fontWeight: 700, border: '2px solid var(--blue)', borderRadius: 'var(--radius-md)' }}
                   autoFocus
                 />
               </div>
-              <p style={{ fontSize: 12, color: 'var(--gray-400)', marginTop: 4 }}>
+              <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', marginTop: 'var(--sp-1)' }}>
                 After {counterModal.mode === 'respond'
                   ? `requester's counter of ${fmtCAD(counterModal.currentPrice)}`
                   : `their posted price of ${fmtCAD(counterModal.currentPrice)}`
@@ -371,7 +371,7 @@ export default function JobRequest() {
               </p>
             </div>
             <div>
-              <label style={{ display: 'block', fontWeight: 600, fontSize: 14, marginBottom: 6 }}>
+              <label style={{ display: 'block', fontWeight: 600, fontSize: 'var(--font-size-sm)', marginBottom: 'var(--sp-2)' }}>
                 Note to requester (optional)
               </label>
               <textarea
@@ -379,7 +379,7 @@ export default function JobRequest() {
                 onChange={e => setCounterNote(e.target.value)}
                 maxLength={500}
                 rows={3}
-                style={{ width: '100%', padding: 10, borderRadius: 8, border: '1px solid var(--gray-300)', resize: 'vertical', fontFamily: 'inherit', fontSize: 13, boxSizing: 'border-box' }}
+                style={{ width: '100%', padding: 'var(--sp-3)', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-300)', resize: 'vertical', fontFamily: 'inherit', fontSize: 'var(--font-size-sm)', boxSizing: 'border-box' }}
                 placeholder="Explain your pricing, availability, etc."
               />
             </div>

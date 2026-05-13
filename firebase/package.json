@@ -4,6 +4,8 @@
   "description": "Firebase emulator seed, admin scripts, and security rules tests for YoSnowMow",
   "scripts": {
     "seed": "node seed-emulator.js",
+    "emulators": "firebase emulators:start --project yosnowmow-dev --import=./emulator-data --export-on-exit=./emulator-data",
+    "emulators:fresh": "firebase emulators:start --project yosnowmow-dev",
     "test:rules": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {

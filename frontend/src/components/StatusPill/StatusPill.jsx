@@ -41,7 +41,7 @@ export default function StatusPill({ status, labelOverrides }) {
     <span style={{
       display: 'inline-flex',
       alignItems: 'center',
-      padding: '3px 10px',
+      padding: '5px 15px',
       borderRadius: 'var(--radius-full)',
       fontSize: 'var(--font-size-xs)',
       fontWeight: 'var(--font-weight-semibold)',

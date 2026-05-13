@@ -5226,3 +5226,167 @@ When `isOpen = false`:
 | File | Change |
 |---|---|
 | `frontend/src/pages/worker/JobRequest.jsx` | `OpportunityCard` checks `job.status` against `OFFER_OPEN_STATUSES`; hides buttons and shows "no longer available" state for settled/cancelled/agreed jobs |
+
+---
+
+## 2026-05-13 — UI: 1.5× font/spacing scale for senior readability + Firebase emulator auth fix
+
+### Context
+
+Two separate problems were tackled in this session:
+
+1. **Senior readability** — All text was too small for the target senior demographic. The goal was a 50% increase across the entire UI.
+2. **Auth failure** — Standard test accounts (`requester@yosnowmow.test` etc.) stopped authenticating against the Firebase emulator. Two root causes were identified and fixed.
+
+---
+
+### Part 1: 1.5× Font and Spacing Scale
+
+#### Approach
+
+All font sizes, spacing, and layout dimensions are controlled by CSS custom properties in `tokens.css`. Scaling everything here propagates automatically to any component already using the token system. Components with hardcoded pixel values in inline styles had to be individually updated.
+
+#### Changes to `frontend/src/styles/tokens.css`
+
+All font size tokens scaled ×1.5:
+
+| Token | Before | After |
+|---|---|---|
+| `--font-size-xs` | 11px | 17px |
+| `--font-size-sm` | 13px | 20px |
+| `--font-size-base` | 15px | 23px |
+| `--font-size-md` | 16px | 24px |
+| `--font-size-lg` | 18px | 27px |
+| `--font-size-xl` | 22px | 33px |
+| `--font-size-2xl` | 28px | 42px |
+| `--font-size-3xl` | 36px | 54px |
+
+All spacing tokens scaled ×1.5:
+
+| Token | Before | After |
+|---|---|---|
+| `--sp-1` | 4px | 6px |
+| `--sp-2` | 8px | 12px |
+| `--sp-3` | 12px | 18px |
+| `--sp-4` | 16px | 24px |
+| `--sp-5` | 20px | 30px |
+| `--sp-6` | 24px | 36px |
+| `--sp-8` | 32px | 48px |
+| `--sp-10` | 40px | 60px |
+| `--sp-12` | 48px | 72px |
+| `--sp-16` | 64px | 96px |
+
+Layout dimensions scaled ×1.5:
+
+| Token | Before | After |
+|---|---|---|
+| `--header-h` | 64px | 96px |
+| `--sidebar-w` | 240px | 360px |
+| `--nav-h` | 64px | 96px |
+
+#### Changes to `frontend/src/styles/globals.css`
+
+Fixed heights that were hardcoded and not controlled by tokens:
+
+| Element | Before | After |
+|---|---|---|
+| `.btn` height | 40px | 60px |
+| `.btn-sm` height | 32px | 48px |
+| `.btn-lg` height | 48px | 72px |
+| `input`, `select`, `textarea` height | 42px | 63px |
+| `.step-circle` | 32×32px | 48×48px |
+| `.pill` padding | 3px 8px | 5px 15px |
+| `.badge` padding | 2px 6px | 3px 12px |
+| `.modal-close` size | 22px | 33px |
+
+#### Components updated to use CSS var tokens
+
+The following files had hardcoded px values in JSX inline styles replaced with `var(--font-size-*)` and `var(--sp-*)` tokens:
+
+- `frontend/src/components/Badge/Badge.jsx` — padding
+- `frontend/src/components/StatusPill/StatusPill.jsx` — padding
+- `frontend/src/pages/requester/Home.jsx` — font sizes, gaps, timeline circles (24→36px), avatar (64→96px)
+- `frontend/src/pages/requester/JobList.jsx` — font sizes, margins
+- `frontend/src/pages/requester/JobStatus.jsx` — font sizes, timeline circles
+- `frontend/src/pages/requester/WorkerProfile.jsx` — font sizes, avatar, spacing
+- `frontend/src/pages/worker/Earnings.jsx` — font sizes, emoji sizes (32/40→48/60px), gaps
+- `frontend/src/pages/worker/ActiveJob.jsx` — font sizes, star rating buttons (36→54px), spacing
+- `frontend/src/pages/worker/JobRequest.jsx` — font sizes, emoji sizes, spacing
+
+---
+
+### Part 2: PostJob Layout Fix
+
+After the font/spacing increase, the `/requester/post-job` page (the 4-step PostJob form) was broken — step labels were overlapping the step circles and the form contents were misaligned.
+
+**Root cause:** `PostJob.jsx` had `marginTop: -20` on step labels, a hardcoded negative margin that was fighting the new larger spacing tokens. Additionally, nearly every other pixel value throughout the file was hardcoded rather than using CSS vars.
+
+**Fix:** Removed the negative `marginTop` (changed to `marginTop: 'var(--sp-2)'`) and converted all hardcoded font size, gap, margin, padding, border-radius, and dimension values throughout the 4-step form to their CSS custom property equivalents.
+
+Key specific changes:
+- Step label `marginTop: -20` → `marginTop: 'var(--sp-2)'` (primary layout fix)
+- Checkbox size: 18×18 → 27×27px
+- Postal code `maxWidth`: 140 → 210px
+- Custom price input `width`: 120 → 180px
+- All `fontSize: 11/13/14/15/16` → `var(--font-size-xs/sm/base/md)`
+- All `gap: 4/8` → `var(--sp-1/2)`
+- `borderRadius: 8` → `var(--radius-md)`
+
+---
+
+### Part 3: Firebase Emulator Auth Fix
+
+#### Problem 1 — Firebase SDK v11 reCAPTCHA Enterprise
+
+After a routine `npm install`, the Firebase package upgraded to v11. Firebase SDK v11 added mandatory reCAPTCHA Enterprise verification to email/password auth flows. The emulator does not implement this check, so all `signInWithEmailAndPassword` calls failed with HTTP 400.
+
+Stack trace evidence: `handleRecaptchaFlow` appeared in the auth error call stack.
+
+**Fix:** Downgraded `firebase` in `frontend/package.json` from `^11.x` to `^10.14.1` and ran `npm install` to reinstall. Firebase v10 does not have the reCAPTCHA Enterprise requirement.
+
+#### Problem 2 — Emulator project ID namespace mismatch (root cause of auth failure)
+
+The Firebase emulator logs revealed:
+
+> `Requested project ID yosnowmow-dev, but the emulator is configured for yosnowmow-prod`
+
+The emulator Auth and Firestore namespaces are partitioned by project ID. Accounts seeded to `yosnowmow-dev` were invisible to the browser, which was reading from `yosnowmow-prod`. This meant the Auth emulator UI showed no users and every login returned `EMAIL_NOT_FOUND`.
+
+**Root cause:** The emulator npm scripts in `firebase/package.json` were not passing `--project yosnowmow-dev`, so the emulator defaulted to `yosnowmow-prod` (or whichever default it resolved). The seed script and the frontend app both explicitly target `yosnowmow-dev`.
+
+**Fix 1:** Updated `firebase/package.json` emulator scripts to explicitly pass `--project yosnowmow-dev`:
+```json
+"emulators": "firebase emulators:start --project yosnowmow-dev --import=./emulator-data --export-on-exit=./emulator-data",
+"emulators:fresh": "firebase emulators:start --project yosnowmow-dev"
+```
+
+**Fix 2:** Set `"singleProjectMode": true` in `firebase/firebase.json` emulators config. With `singleProjectMode: true`, the emulator enforces that all requests use the single configured project ID and rejects cross-project requests instead of silently routing them to a different namespace.
+
+#### Diagnosis steps taken
+
+The diagnosis required several iterations:
+1. Re-seeding (accounts showed [EXISTS]) — proved seed ran fine, problem was elsewhere
+2. Checking Auth emulator UI at `localhost:4000` — showed 0 users despite seed success
+3. Killing stale processes on ports 8080/9099 using PowerShell `Stop-Process -Id (Get-NetTCPConnection -LocalPort XXXX).OwningProcess -Force` (taskkill fails in Git Bash because `/PID` is interpreted as a Windows path)
+4. Reading emulator console logs — the project ID mismatch message was definitive
+
+### Files changed
+
+| File | Change |
+|---|---|
+| `frontend/src/styles/tokens.css` | All font, spacing, and layout tokens scaled ×1.5 |
+| `frontend/src/styles/globals.css` | Button, input, step circle, pill, badge, and modal-close dimensions scaled ×1.5 |
+| `frontend/src/components/Badge/Badge.jsx` | Padding updated to CSS var |
+| `frontend/src/components/StatusPill/StatusPill.jsx` | Padding updated to CSS var |
+| `frontend/src/pages/requester/Home.jsx` | Hardcoded px values → CSS vars |
+| `frontend/src/pages/requester/JobList.jsx` | Hardcoded px values → CSS vars |
+| `frontend/src/pages/requester/JobStatus.jsx` | Hardcoded px values → CSS vars |
+| `frontend/src/pages/requester/PostJob.jsx` | Negative `marginTop` removed; all hardcoded px values → CSS vars |
+| `frontend/src/pages/requester/WorkerProfile.jsx` | Hardcoded px values → CSS vars |
+| `frontend/src/pages/worker/Earnings.jsx` | Hardcoded px values → CSS vars |
+| `frontend/src/pages/worker/ActiveJob.jsx` | Hardcoded px values → CSS vars |
+| `frontend/src/pages/worker/JobRequest.jsx` | Hardcoded px values → CSS vars |
+| `frontend/package.json` | `firebase` downgraded from `^11.x` to `^10.14.1` |
+| `frontend/package-lock.json` | Lockfile updated to reflect firebase v10 |
+| `firebase/package.json` | Emulator scripts now pass `--project yosnowmow-dev` |
+| `firebase/firebase.json` | `singleProjectMode` set to `true` |

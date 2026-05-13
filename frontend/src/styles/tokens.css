@@ -88,15 +88,15 @@
   /* Short alias */
   --font: var(--font-family);
 
-  /* Font sizes */
-  --font-size-xs:   11px;
-  --font-size-sm:   13px;
-  --font-size-base: 15px;
-  --font-size-md:   16px;
-  --font-size-lg:   18px;
-  --font-size-xl:   22px;
-  --font-size-2xl:  28px;
-  --font-size-3xl:  36px;
+  /* Font sizes — 1.5× original for senior accessibility */
+  --font-size-xs:   17px;
+  --font-size-sm:   20px;
+  --font-size-base: 23px;
+  --font-size-md:   24px;
+  --font-size-lg:   27px;
+  --font-size-xl:   33px;
+  --font-size-2xl:  42px;
+  --font-size-3xl:  54px;
 
   /* Short aliases (existing prototype uses these) */
   --text-xs:   var(--font-size-xs);
@@ -119,17 +119,17 @@
   --line-height-base:    1.5;
   --line-height-relaxed: 1.75;
 
-  /* ── Spacing (4px base unit) ───────────────────────────────────── */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
-  --space-5:  20px;
-  --space-6:  24px;
-  --space-8:  32px;
-  --space-10: 40px;
-  --space-12: 48px;
-  --space-16: 64px;
+  /* ── Spacing (6px base unit — 1.5× scaled for accessibility) ─── */
+  --space-1:  6px;
+  --space-2:  12px;
+  --space-3:  18px;
+  --space-4:  24px;
+  --space-5:  30px;
+  --space-6:  36px;
+  --space-8:  48px;
+  --space-10: 60px;
+  --space-12: 72px;
+  --space-16: 96px;
 
   /* Short aliases */
   --sp-1:  var(--space-1);
@@ -165,11 +165,11 @@
   --z-modal: 100;
   --z-toast: 200;
 
-  /* ── Layout ────────────────────────────────────────────────────── */
+  /* ── Layout (1.5× scaled for accessibility) ────────────────────── */
   --max-width-content: 1080px;
-  --header-height:     64px;
-  --sidebar-width:     240px;
-  --bottom-nav-height: 64px;
+  --header-height:     96px;
+  --sidebar-width:     360px;
+  --bottom-nav-height: 96px;
 
   /* Short aliases (existing code uses these) */
   --max-w:    var(--max-width-content);

@@ -68,7 +68,7 @@ export default function WorkerEarnings() {
         ].map(stat => (
           <div key={stat.label} className="card" style={{ textAlign: 'center', padding: 'var(--sp-5) var(--sp-4)' }}>
             <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, color: stat.color }}>{stat.value}</div>
-            <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 600, marginTop: 4 }}>{stat.label}</div>
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', fontWeight: 600, marginTop: 'var(--sp-1)' }}>{stat.label}</div>
           </div>
         ))}
       </div>
@@ -76,23 +76,23 @@ export default function WorkerEarnings() {
       {/* Rating / profile card */}
       <div className="card" style={{ marginBottom: 'var(--sp-6)', display: 'flex', alignItems: 'center', gap: 'var(--sp-5)' }}>
         <div style={{ textAlign: 'center', flexShrink: 0 }}>
-          <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--blue)' }}>
+          <div style={{ fontSize: 'var(--font-size-3xl)', fontWeight: 900, color: 'var(--blue)' }}>
             {rating != null ? Number(rating).toFixed(1) : '—'}
           </div>
-          <div style={{ fontSize: 20, color: '#FBBF24', letterSpacing: -2 }}>
+          <div style={{ fontSize: 'var(--font-size-lg)', color: '#FBBF24', letterSpacing: -2 }}>
             {'★'.repeat(ratingStars)}{'☆'.repeat(5 - ratingStars)}
           </div>
-          <div style={{ fontSize: 11, color: 'var(--gray-400)', marginTop: 2 }}>Rating</div>
+          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', marginTop: 'var(--sp-1)' }}>Rating</div>
         </div>
-        <div className="divider" style={{ width: 1, height: 60, margin: '0' }} />
+        <div className="divider" style={{ width: 1, height: 90, margin: '0' }} />
         <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 700, fontSize: 15, marginBottom: 4 }}>{workerName}</div>
+          <div style={{ fontWeight: 700, fontSize: 'var(--font-size-base)', marginBottom: 'var(--sp-1)' }}>{workerName}</div>
           {memberSince && (
-            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 4 }}>
+            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)', marginBottom: 'var(--sp-1)' }}>
               Worker since {memberSince}
             </div>
           )}
-          <span style={{ background: 'var(--green)', color: '#fff', padding: '2px 8px', borderRadius: 4, fontWeight: 600, fontSize: 11 }}>
+          <span style={{ background: 'var(--green)', color: '#fff', padding: '3px 12px', borderRadius: 4, fontWeight: 600, fontSize: 'var(--font-size-xs)' }}>
             Background Checked ✓
           </span>
         </div>
@@ -123,50 +123,50 @@ export default function WorkerEarnings() {
                 {/* Summary row */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-4)' }}>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 2 }} className="truncate">
+                    <div style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)', marginBottom: 'var(--sp-1)' }} className="truncate">
                       {job.propertyAddress?.fullText ?? job.jobId}
                     </div>
-                    <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>
+                    <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)' }}>
                       {fmtScope(job.scope)} · {job.jobId}
                     </div>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--sp-1)', flexShrink: 0 }}>
                     <StatusPill status={job.status} labelOverrides={{ RELEASED: 'Completed & Paid', SETTLED: 'Completed & Paid' }} />
                     {job.workerPayoutCAD != null && (
-                      <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--green)' }}>
+                      <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 700, color: 'var(--green)' }}>
                         {fmtCAD(job.workerPayoutCAD)}
                       </span>
                     )}
                   </div>
-                  <span style={{ color: 'var(--gray-300)', fontSize: 18, flexShrink: 0 }}>
+                  <span style={{ color: 'var(--gray-300)', fontSize: 'var(--font-size-lg)', flexShrink: 0 }}>
                     {isOpen ? '▲' : '▼'}
                   </span>
                 </div>
 
                 {/* Expanded billing breakdown */}
                 {isOpen && (
-                  <div style={{ marginTop: 'var(--sp-4)', paddingTop: 'var(--sp-4)', borderTop: '1px solid var(--gray-100)', fontSize: 14 }}>
+                  <div style={{ marginTop: 'var(--sp-4)', paddingTop: 'var(--sp-4)', borderTop: '1px solid var(--gray-100)', fontSize: 'var(--font-size-sm)' }}>
                     {job.totalAmountCAD != null ? (
                       <>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-2)' }}>
                           <span style={{ color: 'var(--gray-500)' }}>Contracted price</span>
                           <span style={{ fontWeight: 600 }}>{fmtCAD(job.tierPriceCAD)}</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-2)' }}>
                           <span style={{ color: 'var(--gray-500)' }}>HST (13%)</span>
                           <span style={{ fontWeight: 600 }}>+ {fmtCAD(job.hstAmountCAD)}</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontWeight: 700, borderTop: '1px solid var(--gray-200)', paddingTop: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-2)', fontWeight: 700, borderTop: '1px solid var(--gray-200)', paddingTop: 'var(--sp-2)' }}>
                           <span>Total billed to customer</span>
                           <span>{fmtCAD(job.totalAmountCAD)}</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-2)' }}>
                           <span style={{ color: 'var(--gray-500)' }}>Less platform fee (15%)</span>
                           <span style={{ color: 'var(--gray-500)' }}>− {fmtCAD(platformFeeCAD)}</span>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, borderTop: '1px solid var(--gray-200)', paddingTop: 6 }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, borderTop: '1px solid var(--gray-200)', paddingTop: 'var(--sp-2)' }}>
                           <span>{paid ? 'Paid to you' : 'To be paid to you'}</span>
-                          <span style={{ color: 'var(--green)', fontSize: 16 }}>{fmtCAD(job.workerPayoutCAD)}</span>
+                          <span style={{ color: 'var(--green)', fontSize: 'var(--font-size-md)' }}>{fmtCAD(job.workerPayoutCAD)}</span>
                         </div>
                       </>
                     ) : (

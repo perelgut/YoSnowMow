@@ -34,7 +34,7 @@ input, textarea, select { font: inherit; }
 /* Status pills */
 .pill {
   display: inline-flex; align-items: center;
-  padding: 3px 10px;
+  padding: 5px 15px;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
   font-weight: 600;
@@ -44,7 +44,7 @@ input, textarea, select { font: inherit; }
 /* Buttons */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: var(--sp-2);
-  padding: 0 var(--sp-5); height: 40px;
+  padding: 0 var(--sp-5); height: 60px;
   border-radius: var(--radius);
   font-size: var(--text-base); font-weight: 600;
   transition: opacity .15s, transform .1s;
@@ -56,8 +56,8 @@ input, textarea, select { font: inherit; }
 .btn-secondary { background: var(--white); color: var(--blue); border: 1.5px solid var(--blue); }
 .btn-ghost { background: transparent; color: var(--gray-600); }
 .btn-danger { background: var(--red); color: #fff; }
-.btn-sm { height: 32px; padding: 0 var(--sp-3); font-size: var(--text-sm); }
-.btn-lg { height: 48px; padding: 0 var(--sp-8); font-size: var(--text-md); }
+.btn-sm { height: 48px; padding: 0 var(--sp-3); font-size: var(--text-sm); }
+.btn-lg { height: 72px; padding: 0 var(--sp-8); font-size: var(--text-md); }
 .btn-full { width: 100%; }
 .btn:disabled { opacity: .45; cursor: not-allowed; }
 
@@ -65,7 +65,7 @@ input, textarea, select { font: inherit; }
 .field { display: flex; flex-direction: column; gap: var(--sp-1); margin-bottom: var(--sp-4); }
 .label { font-size: var(--text-sm); font-weight: 600; color: var(--gray-600); }
 .input {
-  width: 100%; height: 42px; padding: 0 var(--sp-4);
+  width: 100%; height: 63px; padding: 0 var(--sp-4);
   border: 1.5px solid var(--gray-200); border-radius: var(--radius);
   font-size: var(--text-base); background: var(--white);
   transition: border-color .15s, box-shadow .15s;
@@ -79,7 +79,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .divider { height: 1px; background: var(--gray-200); margin: var(--sp-6) 0; }
 
 /* Badge */
-.badge { display: inline-block; padding: 2px 8px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 700; letter-spacing: .3px; }
+.badge { display: inline-block; padding: 3px 12px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: 700; letter-spacing: .3px; }
 .badge-blue { background: var(--blue-light); color: var(--blue-dark); }
 .badge-green { background: var(--green-bg); color: var(--green); }
 .badge-amber { background: var(--amber-bg); color: var(--amber); }
@@ -106,7 +106,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 }
 .modal-header { display: flex; align-items: center; justify-content: space-between; padding: var(--sp-5) var(--sp-6); border-bottom: 1px solid var(--gray-200); }
 .modal-title { font-size: var(--text-md); font-weight: 700; }
-.modal-close { color: var(--gray-400); font-size: 22px; line-height: 1; }
+.modal-close { color: var(--gray-400); font-size: 33px; line-height: 1; }
 .modal-close:hover { color: var(--gray-800); }
 .modal-body { padding: var(--sp-6); }
 .modal-footer { padding: var(--sp-4) var(--sp-6); border-top: 1px solid var(--gray-200); display: flex; gap: var(--sp-3); justify-content: flex-end; }
@@ -130,7 +130,7 @@ select.input { appearance: none; background-image: url("data:image/svg+xml,%3Csv
 .steps { display: flex; align-items: center; gap: 0; margin-bottom: var(--sp-8); }
 .step-item { display: flex; align-items: center; flex: 1; }
 .step-circle {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 48px; height: 48px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: var(--text-sm); font-weight: 700;
   border: 2px solid var(--gray-200); color: var(--gray-400); background: var(--white);

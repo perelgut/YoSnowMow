@@ -20,7 +20,7 @@ export default function Badge({ variant = 'default', children }) {
   return (
     <span style={{
       display: 'inline-block',
-      padding: '2px 8px',
+      padding: '3px 12px',
       borderRadius: 'var(--radius-full)',
       fontSize: 'var(--font-size-xs)',
       fontWeight: 'var(--font-weight-semibold)',

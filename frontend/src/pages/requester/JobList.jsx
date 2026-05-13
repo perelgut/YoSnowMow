@@ -42,20 +42,20 @@ export default function JobList() {
                 onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, marginBottom: 4 }} className="truncate">
+                  <div style={{ fontWeight: 600, marginBottom: 'var(--sp-1)' }} className="truncate">
                     {job.propertyAddress?.fullText ?? '—'}
                   </div>
-                  <div style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 2 }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-400)', marginBottom: 'var(--sp-1)' }}>
                     {fmtScope(job.scope)}
                   </div>
-                  <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-400)' }}>
                     {job.jobId}
                   </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--sp-1)', flexShrink: 0 }}>
                   <StatusPill status={job.status} labelOverrides={{ RELEASED: 'Worker Paid', SETTLED: 'Worker Paid' }} />
                   {fmtCAD(job.totalAmountCAD) && (
-                    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-600)' }}>
+                    <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--gray-600)' }}>
                       {fmtCAD(job.totalAmountCAD)}
                     </span>
                   )}

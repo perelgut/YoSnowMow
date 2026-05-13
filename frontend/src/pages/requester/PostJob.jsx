@@ -286,7 +286,7 @@ export default function PostJob() {
           </div>
         ))}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: 'var(--gray-400)', fontWeight: 600, marginTop: -20, marginBottom: 'var(--sp-6)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', fontWeight: 600, marginTop: 'var(--sp-2)', marginBottom: 'var(--sp-6)' }}>
         <span>Location</span><span>Services</span><span>Schedule</span><span>Review</span>
       </div>
 
@@ -297,22 +297,22 @@ export default function PostJob() {
 
           {/* Address source toggle — only shown when the user has a stored home address */}
           {hasHomeAddress && (
-            <div style={{ marginBottom: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <div style={{ marginBottom: 'var(--sp-5)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
               {[
                 { val: true,  label: `My home address  —  ${userProfile.homeAddressText}` },
                 { val: false, label: 'Another address (e.g. a family member\'s home)' },
               ].map(opt => (
                 <label key={String(opt.val)} style={{
-                  display: 'flex', alignItems: 'flex-start', gap: 10,
+                  display: 'flex', alignItems: 'flex-start', gap: 'var(--sp-3)',
                   padding: 'var(--sp-3) var(--sp-4)', borderRadius: 'var(--radius)',
                   border: `1.5px solid ${useHomeAddr === opt.val ? 'var(--blue)' : 'var(--gray-200)'}`,
                   background: useHomeAddr === opt.val ? 'var(--blue-light)' : '#fff',
-                  cursor: 'pointer', fontSize: 14,
+                  cursor: 'pointer', fontSize: 'var(--font-size-sm)',
                 }}>
                   <input type="radio" name="addrMode" value={String(opt.val)}
                     checked={useHomeAddr === opt.val}
                     onChange={() => { setUseHomeAddr(opt.val); setErrors({}) }}
-                    style={{ marginTop: 2, flexShrink: 0 }} />
+                    style={{ marginTop: 'var(--sp-1)', flexShrink: 0 }} />
                   <span style={{ fontWeight: useHomeAddr === opt.val ? 600 : 400 }}>{opt.label}</span>
                 </label>
               ))}
@@ -360,7 +360,7 @@ export default function PostJob() {
                 <label className="label">Postal code *</label>
                 <input className="input" placeholder="M5V 3A8" value={form.postalCode}
                   onChange={e => set('postalCode', e.target.value.toUpperCase())}
-                  style={{ maxWidth: 140 }} />
+                  style={{ maxWidth: 210 }} />
                 {errors.postalCode && <span className="error-text">{errors.postalCode}</span>}
               </div>
               <div className="field">
@@ -383,8 +383,8 @@ export default function PostJob() {
       {/* Step 2 */}
       {step === 2 && (
         <div className="card">
-          <h2 style={{ fontWeight: 700, marginBottom: 4 }}>What services do you need?</h2>
-          <p style={{ fontSize: 13, color: 'var(--gray-400)', marginBottom: 'var(--sp-5)' }}>Select a service and size to set your <strong>opening offer price</strong>. Workers may accept or negotiate.</p>
+          <h2 style={{ fontWeight: 700, marginBottom: 'var(--sp-1)' }}>What services do you need?</h2>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-400)', marginBottom: 'var(--sp-5)' }}>Select a service and size to set your <strong>opening offer price</strong>. Workers may accept or negotiate.</p>
           {errors.services && <div className="alert alert-error">{errors.services}</div>}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginBottom: 'var(--sp-5)' }}>
@@ -401,33 +401,33 @@ export default function PostJob() {
                   overflow: 'hidden',
                 }}>
                   {/* Service row */}
-                  <label style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 'var(--sp-3) var(--sp-4)', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={isSelected} onChange={() => toggleSvc(s.key)} style={{ width: 18, height: 18, flexShrink: 0 }} />
+                  <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)', padding: 'var(--sp-3) var(--sp-4)', cursor: 'pointer' }}>
+                    <input type="checkbox" checked={isSelected} onChange={() => toggleSvc(s.key)} style={{ width: 27, height: 27, flexShrink: 0 }} />
                     <span style={{ flex: 1, fontWeight: 600 }}>{s.label}</span>
-                    <span style={{ color: isSelected ? 'var(--blue)' : 'var(--gray-400)', fontSize: 14, fontWeight: isSelected ? 700 : 400 }}>
+                    <span style={{ color: isSelected ? 'var(--blue)' : 'var(--gray-400)', fontSize: 'var(--font-size-sm)', fontWeight: isSelected ? 700 : 400 }}>
                       {isSelected ? fmt(selectedSizeObj.price) : `from ${fmt(s.sizes[0].price)}`}
                     </span>
                   </label>
 
                   {/* Size selector */}
                   {isSelected && (
-                    <div style={{ display: 'flex', gap: 8, padding: '0 var(--sp-4) var(--sp-3)', paddingLeft: 46 }}>
+                    <div style={{ display: 'flex', gap: 'var(--sp-2)', padding: '0 var(--sp-4) var(--sp-3)', paddingLeft: 'var(--sp-10)' }}>
                       {s.sizes.map(sz => (
                         <button
                           key={sz.key}
                           type="button"
                           onClick={() => setSvcSize(s.key, sz.key)}
                           style={{
-                            flex: 1, padding: '6px 4px', borderRadius: 6, cursor: 'pointer',
+                            flex: 1, padding: 'var(--sp-2) var(--sp-1)', borderRadius: 'var(--radius-sm)', cursor: 'pointer',
                             border: `1.5px solid ${selectedSizeKey === sz.key ? 'var(--blue)' : 'var(--gray-300)'}`,
                             background: selectedSizeKey === sz.key ? 'var(--blue)' : '#fff',
                             color: selectedSizeKey === sz.key ? '#fff' : 'var(--gray-600)',
                             textAlign: 'center',
                           }}
                         >
-                          <div style={{ fontWeight: 700, fontSize: 13 }}>{sz.label}</div>
-                          <div style={{ fontSize: 11, opacity: .85 }}>{sz.desc}</div>
-                          <div style={{ fontSize: 12, fontWeight: 600, marginTop: 2 }}>{fmt(sz.price)}</div>
+                          <div style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)' }}>{sz.label}</div>
+                          <div style={{ fontSize: 'var(--font-size-xs)', opacity: .85 }}>{sz.desc}</div>
+                          <div style={{ fontSize: 'var(--font-size-xs)', fontWeight: 600, marginTop: 'var(--sp-1)' }}>{fmt(sz.price)}</div>
                         </button>
                       ))}
                     </div>
@@ -438,20 +438,20 @@ export default function PostJob() {
           </div>
 
           {basePrice > 0 && (
-            <div style={{ background: 'var(--gray-100)', borderRadius: 8, padding: 'var(--sp-4)', marginBottom: 'var(--sp-4)', fontSize: 14 }}>
+            <div style={{ background: 'var(--gray-100)', borderRadius: 'var(--radius-md)', padding: 'var(--sp-4)', marginBottom: 'var(--sp-4)', fontSize: 'var(--font-size-sm)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span>{useCustomPrice && customPriceCents ? 'Your custom fee' : 'Services subtotal'}</span>
                 <span>{fmt(postedPrice)}</span>
               </div>
               {useCustomPrice && customPriceCents && basePrice > 0 && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gray-400)', marginTop: 4, fontSize: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gray-400)', marginTop: 'var(--sp-1)', fontSize: 'var(--font-size-xs)' }}>
                   <span>Est. based on services</span><span>{fmt(basePrice)}</span>
                 </div>
               )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gray-400)', marginTop: 4 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gray-400)', marginTop: 'var(--sp-1)' }}>
                 <span>HST (13%)</span><span>+ {fmt(hst)}</span>
               </div>
-              <div className="divider" style={{ margin: '8px 0' }} />
+              <div className="divider" style={{ margin: 'var(--sp-2) 0' }} />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}>
                 <span>Opening offer total</span><span style={{ color: 'var(--blue)' }}>{fmt(total)}</span>
               </div>
@@ -459,7 +459,7 @@ export default function PostJob() {
           )}
 
           <div style={{ marginBottom: 'var(--sp-4)' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', fontSize: 14, padding: '4px 0' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)', cursor: 'pointer', fontSize: 'var(--font-size-sm)', padding: 'var(--sp-1) 0' }}>
               <input
                 type="checkbox"
                 checked={useCustomPrice}
@@ -468,9 +468,9 @@ export default function PostJob() {
               <span style={{ fontWeight: 600 }}>Propose a different fee</span>
             </label>
             {useCustomPrice && (
-              <div style={{ marginTop: 8, paddingLeft: 26 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{ fontSize: 16, fontWeight: 700 }}>$</span>
+              <div style={{ marginTop: 'var(--sp-2)', paddingLeft: 'var(--sp-6)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
+                  <span style={{ fontSize: 'var(--font-size-md)', fontWeight: 700 }}>$</span>
                   <input
                     type="number"
                     min="1"
@@ -478,12 +478,12 @@ export default function PostJob() {
                     value={customPriceInput}
                     onChange={e => setCustomPriceInput(e.target.value)}
                     placeholder={basePrice > 0 ? (basePrice / 100).toFixed(2) : ''}
-                    style={{ width: 120, padding: '8px 10px', border: '2px solid var(--blue)', borderRadius: 8, fontSize: 15, fontWeight: 700 }}
+                    style={{ width: 180, padding: 'var(--sp-2) var(--sp-3)', border: '2px solid var(--blue)', borderRadius: 'var(--radius-md)', fontSize: 'var(--font-size-base)', fontWeight: 700 }}
                     autoFocus
                   />
-                  <span style={{ fontSize: 13, color: 'var(--gray-500)' }}>CAD (before HST)</span>
+                  <span style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)' }}>CAD (before HST)</span>
                 </div>
-                {errors.customPrice && <div className="error-text" style={{ marginTop: 4 }}>{errors.customPrice}</div>}
+                {errors.customPrice && <div className="error-text" style={{ marginTop: 'var(--sp-1)' }}>{errors.customPrice}</div>}
               </div>
             )}
           </div>
@@ -501,7 +501,7 @@ export default function PostJob() {
           <h2 style={{ fontWeight: 700, marginBottom: 'var(--sp-5)' }}>When do you need it?</h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', marginBottom: 'var(--sp-5)' }}>
             {[{ val: 'asap', label: '⚡ As soon as possible (within 2 hours)' }, { val: 'scheduled', label: '📅 Schedule a specific time' }].map(opt => (
-              <label key={opt.val} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 'var(--sp-3) var(--sp-4)', borderRadius: 'var(--radius)', border: `1.5px solid ${form.schedule === opt.val ? 'var(--blue)' : 'var(--gray-200)'}`, background: form.schedule === opt.val ? 'var(--blue-light)' : '#fff', cursor: 'pointer' }}>
+              <label key={opt.val} style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)', padding: 'var(--sp-3) var(--sp-4)', borderRadius: 'var(--radius)', border: `1.5px solid ${form.schedule === opt.val ? 'var(--blue)' : 'var(--gray-200)'}`, background: form.schedule === opt.val ? 'var(--blue-light)' : '#fff', cursor: 'pointer' }}>
                 <input type="radio" name="schedule" value={opt.val} checked={form.schedule === opt.val} onChange={() => set('schedule', opt.val)} />
                 <span style={{ fontWeight: 600 }}>{opt.label}</span>
               </label>
@@ -520,7 +520,7 @@ export default function PostJob() {
           <div className="field" style={{ marginBottom: 'var(--sp-5)' }}>
             <label className="label">Special notes for Worker (optional)</label>
             <textarea className="input" rows={3} placeholder="Gate code, dog in yard, access instructions…" value={form.notes} onChange={e => set('notes', e.target.value)} maxLength={500} />
-            <span style={{ fontSize: 11, color: 'var(--gray-400)', textAlign: 'right' }}>{form.notes.length}/500</span>
+            <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', textAlign: 'right' }}>{form.notes.length}/500</span>
           </div>
           <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
             <button className="btn btn-ghost" onClick={() => setStep(2)}>← Back</button>
@@ -533,13 +533,13 @@ export default function PostJob() {
       {step === 4 && (
         <div className="card">
           <h2 style={{ fontWeight: 700, marginBottom: 'var(--sp-5)' }}>Review & Post</h2>
-          <div style={{ background: 'var(--gray-100)', borderRadius: 8, padding: 'var(--sp-4)', marginBottom: 'var(--sp-5)', fontSize: 14, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div style={{ background: 'var(--gray-100)', borderRadius: 'var(--radius-md)', padding: 'var(--sp-4)', marginBottom: 'var(--sp-5)', fontSize: 'var(--font-size-sm)', display: 'flex', flexDirection: 'column', gap: 'var(--sp-2)' }}>
             <div><strong>Address:</strong> {fullAddress}</div>
             <div><strong>Services:</strong></div>
             {selectedServices.map(s => {
               const sizeObj = s.sizes.find(sz => sz.key === form.services[s.key])
               return (
-                <div key={s.key} style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: 12, color: 'var(--gray-600)' }}>
+                <div key={s.key} style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: 'var(--sp-3)', color: 'var(--gray-600)' }}>
                   <span>{s.label} — {sizeObj.label} ({sizeObj.desc})</span>
                   <span style={{ fontWeight: 600 }}>{fmt(sizeObj.price)}</span>
                 </div>
@@ -548,21 +548,21 @@ export default function PostJob() {
             <div><strong>Schedule:</strong> {form.schedule === 'asap' ? 'As soon as possible' : `${form.date} at ${form.time}`}</div>
             {form.notes && <div><strong>Notes:</strong> {form.notes}</div>}
           </div>
-          <div style={{ background: 'var(--gray-100)', borderRadius: 8, padding: 'var(--sp-4)', marginBottom: 'var(--sp-5)', fontSize: 14 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}><span>Your opening offer</span><span>{fmt(postedPrice)}</span></div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4, color: 'var(--gray-500)' }}><span>HST (13%)</span><span>+ {fmt(hst)}</span></div>
-            <div className="divider" style={{ margin: '8px 0' }} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, marginBottom: 4 }}><span>Total charged</span><span style={{ color: 'var(--blue)' }}>{fmt(total)}</span></div>
-            <div className="divider" style={{ margin: '8px 0' }} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gray-500)', marginBottom: 4 }}><span>Less platform fee (15%)</span><span>− {fmt(fee)}</span></div>
+          <div style={{ background: 'var(--gray-100)', borderRadius: 'var(--radius-md)', padding: 'var(--sp-4)', marginBottom: 'var(--sp-5)', fontSize: 'var(--font-size-sm)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-1)' }}><span>Your opening offer</span><span>{fmt(postedPrice)}</span></div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--sp-1)', color: 'var(--gray-500)' }}><span>HST (13%)</span><span>+ {fmt(hst)}</span></div>
+            <div className="divider" style={{ margin: 'var(--sp-2) 0' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, marginBottom: 'var(--sp-1)' }}><span>Total charged</span><span style={{ color: 'var(--blue)' }}>{fmt(total)}</span></div>
+            <div className="divider" style={{ margin: 'var(--sp-2) 0' }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--gray-500)', marginBottom: 'var(--sp-1)' }}><span>Less platform fee (15%)</span><span>− {fmt(fee)}</span></div>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}><span>Total to be paid to Worker</span><span style={{ color: 'var(--green)' }}>{fmt(workerNet)}</span></div>
           </div>
-          <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', cursor: 'pointer', marginBottom: 'var(--sp-5)', fontSize: 13, color: 'var(--gray-600)' }}>
-            <input type="checkbox" checked={ack} onChange={e => setAck(e.target.checked)} style={{ marginTop: 2, flexShrink: 0 }} />
+          <label style={{ display: 'flex', gap: 'var(--sp-3)', alignItems: 'flex-start', cursor: 'pointer', marginBottom: 'var(--sp-5)', fontSize: 'var(--font-size-sm)', color: 'var(--gray-600)' }}>
+            <input type="checkbox" checked={ack} onChange={e => setAck(e.target.checked)} style={{ marginTop: 'var(--sp-1)', flexShrink: 0 }} />
             I acknowledge that the Worker is an independent contractor and not an employee of YoSnowMow. All liability for services rests with the Worker.
           </label>
-          {errors.ack    && <div className="alert alert-error" style={{ marginBottom: 12 }}>{errors.ack}</div>}
-          {errors.submit && <div className="alert alert-error" style={{ marginBottom: 12 }}>{errors.submit}</div>}
+          {errors.ack    && <div className="alert alert-error" style={{ marginBottom: 'var(--sp-3)' }}>{errors.ack}</div>}
+          {errors.submit && <div className="alert alert-error" style={{ marginBottom: 'var(--sp-3)' }}>{errors.submit}</div>}
           <div style={{ display: 'flex', gap: 'var(--sp-3)' }}>
             <button className="btn btn-ghost" onClick={() => setStep(3)} disabled={submitting}>← Back</button>
             <button className="btn btn-primary btn-lg" style={{ flex: 1 }} onClick={submit} disabled={submitting}>

@@ -30,11 +30,11 @@ export default function RequesterHome() {
         borderRadius: 16, padding: 'var(--sp-10) var(--sp-8)', marginBottom: 'var(--sp-8)',
         color: '#fff', textAlign: 'center',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--sp-4)' }}>
           <img src={logoColor} alt="YoSnowMow" style={{ height: 360, width: 'auto' }} />
         </div>
-        <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, marginBottom: 8 }}>Snow cleared or lawns mowed. Fast.</h1>
-        <p style={{ opacity: .85, marginBottom: 28, fontSize: 'var(--text-md)' }}>Connect with a local worker in minutes.</p>
+        <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 800, marginBottom: 'var(--sp-2)' }}>Snow cleared or lawns mowed. Fast.</h1>
+        <p style={{ opacity: .85, marginBottom: 'var(--sp-6)', fontSize: 'var(--text-md)' }}>Connect with a local worker in minutes.</p>
         <Link to="/requester/post-job" className="btn btn-lg" style={{ background: '#fff', color: '#1A6FDB' }}>
           ➕ Post a Job
         </Link>
@@ -63,17 +63,17 @@ export default function RequesterHome() {
                 onMouseLeave={e => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
               >
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontWeight: 600, marginBottom: 4 }} className="truncate">
+                  <div style={{ fontWeight: 600, marginBottom: 'var(--sp-1)' }} className="truncate">
                     {job.propertyAddress?.fullText ?? '—'}
                   </div>
-                  <div style={{ fontSize: 13, color: 'var(--gray-400)' }}>
+                  <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-400)' }}>
                     {fmtScope(job.scope)} &nbsp;·&nbsp; {job.jobId}
                   </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, flexShrink: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 'var(--sp-1)', flexShrink: 0 }}>
                   <StatusPill status={job.status} labelOverrides={{ RELEASED: 'Worker Paid', SETTLED: 'Worker Paid' }} />
                   {fmtCAD(job.totalAmountCAD) && (
-                    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--gray-600)' }}>
+                    <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--gray-600)' }}>
                       {fmtCAD(job.totalAmountCAD)}
                     </span>
                   )}

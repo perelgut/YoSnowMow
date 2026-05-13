@@ -145,9 +145,9 @@ export default function ActiveJob() {
     <div>
       <h1 style={{ fontSize: 'var(--text-xl)', fontWeight: 800, marginBottom: 'var(--sp-6)' }}>Active Job</h1>
       <div className="card" style={{ textAlign: 'center', padding: 'var(--sp-10)', color: 'var(--gray-400)' }}>
-        <div style={{ fontSize: 48, marginBottom: 12 }}>❄️</div>
-        <p style={{ fontWeight: 600, marginBottom: 8 }}>No active job</p>
-        <p style={{ fontSize: 14 }}>Once your offer is agreed and the homeowner pays, your job will appear here.</p>
+        <div style={{ fontSize: 72, marginBottom: 'var(--sp-3)' }}>❄️</div>
+        <p style={{ fontWeight: 600, marginBottom: 'var(--sp-2)' }}>No active job</p>
+        <p style={{ fontSize: 'var(--font-size-sm)' }}>Once your offer is agreed and the homeowner pays, your job will appear here.</p>
       </div>
     </div>
   )
@@ -167,8 +167,8 @@ export default function ActiveJob() {
       <div className="card" style={{ marginBottom: 'var(--sp-4)', background: bannerBg, color: '#fff' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
-            <div style={{ fontSize: 12, opacity: .8, fontWeight: 600, marginBottom: 4 }}>Current Status</div>
-            <div style={{ fontWeight: 800, fontSize: 18 }}>
+            <div style={{ fontSize: 'var(--font-size-xs)', opacity: .8, fontWeight: 600, marginBottom: 'var(--sp-1)' }}>Current Status</div>
+            <div style={{ fontWeight: 800, fontSize: 'var(--font-size-lg)' }}>
               {job.status === 'ESCROW_HELD'      && '🚗 Head to the property'}
               {job.status === 'IN_PROGRESS'      && '❄️ Clearing in progress'}
               {job.status === 'PENDING_APPROVAL' && '✅ Work submitted — awaiting homeowner approval'}
@@ -183,8 +183,8 @@ export default function ActiveJob() {
 
       {/* Job details */}
       <div className="card" style={{ marginBottom: 'var(--sp-4)' }}>
-        <h2 style={{ fontWeight: 700, fontSize: 15, marginBottom: 'var(--sp-4)' }}>Job Details</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
+        <h2 style={{ fontWeight: 700, fontSize: 'var(--font-size-base)', marginBottom: 'var(--sp-4)' }}>Job Details</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)', fontSize: 'var(--font-size-sm)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
             <span style={{ color: 'var(--gray-500)' }}>Address</span>
             <span style={{ fontWeight: 600, textAlign: 'right', maxWidth: '60%' }}>
@@ -200,9 +200,9 @@ export default function ActiveJob() {
             <span style={{ fontWeight: 600 }}>{fmtTimestamp(job.startWindowEarliest)}</span>
           </div>
           {job.notesForWorker && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-1)' }}>
               <span style={{ color: 'var(--gray-500)' }}>Customer Notes</span>
-              <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 6, padding: 10, fontSize: 13 }}>
+              <div style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: 'var(--radius-sm)', padding: 'var(--sp-3)', fontSize: 'var(--font-size-sm)' }}>
                 {job.notesForWorker}
               </div>
             </div>
@@ -213,7 +213,7 @@ export default function ActiveJob() {
       {/* Earnings */}
       <div className="card" style={{ marginBottom: 'var(--sp-4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
-          <div style={{ fontSize: 12, color: 'var(--gray-400)', fontWeight: 600 }}>Your earnings</div>
+          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', fontWeight: 600 }}>Your earnings</div>
           <div style={{ fontSize: 'var(--text-xl)', fontWeight: 900, color: 'var(--green)' }}>
             {fmtCAD(job.workerPayoutCAD)}
           </div>
@@ -256,28 +256,28 @@ export default function ActiveJob() {
             style={{
               display: 'block',
               border: `2px dashed ${photoUploaded ? 'var(--green)' : 'var(--gray-300)'}`,
-              borderRadius: 8, padding: 'var(--sp-5)', textAlign: 'center',
+              borderRadius: 'var(--radius-md)', padding: 'var(--sp-5)', textAlign: 'center',
               background: photoUploaded ? '#F0FDF4' : '#fff',
               cursor: photoUploaded ? 'default' : 'pointer',
-              marginBottom: 16,
+              marginBottom: 'var(--sp-4)',
               opacity: photoUploading ? .6 : 1,
             }}
           >
             {photoUploaded ? (
               <>
-                <div style={{ fontSize: 32, marginBottom: 4 }}>✅</div>
-                <div style={{ fontWeight: 600, color: 'var(--green)', fontSize: 14 }}>Photo uploaded</div>
+                <div style={{ fontSize: 48, marginBottom: 'var(--sp-1)' }}>✅</div>
+                <div style={{ fontWeight: 600, color: 'var(--green)', fontSize: 'var(--font-size-sm)' }}>Photo uploaded</div>
               </>
             ) : photoUploading ? (
               <>
-                <div style={{ fontSize: 32, marginBottom: 4 }}>⏳</div>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>Uploading…</div>
+                <div style={{ fontSize: 48, marginBottom: 'var(--sp-1)' }}>⏳</div>
+                <div style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)' }}>Uploading…</div>
               </>
             ) : (
               <>
-                <div style={{ fontSize: 32, marginBottom: 4 }}>📷</div>
-                <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 4 }}>Upload completion photo</div>
-                <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>JPEG or PNG · max 10 MB</div>
+                <div style={{ fontSize: 48, marginBottom: 'var(--sp-1)' }}>📷</div>
+                <div style={{ fontWeight: 600, fontSize: 'var(--font-size-sm)', marginBottom: 'var(--sp-1)' }}>Upload completion photo</div>
+                <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)' }}>JPEG or PNG · max 10 MB</div>
               </>
             )}
           </label>
@@ -290,7 +290,7 @@ export default function ActiveJob() {
             {submitting ? 'Saving…' : '✓ Mark Work Complete'}
           </button>
           {!photoUploaded && (
-            <p style={{ fontSize: 12, color: 'var(--gray-400)', textAlign: 'center', marginTop: 8 }}>
+            <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)', textAlign: 'center', marginTop: 'var(--sp-2)' }}>
               Upload a completion photo before marking as complete
             </p>
           )}
@@ -300,12 +300,12 @@ export default function ActiveJob() {
       {/* PENDING_APPROVAL: waiting for homeowner */}
       {job.status === 'PENDING_APPROVAL' && (
         <div className="card" style={{ textAlign: 'center', background: '#F0FDF4', border: '1px solid #BBF7D0', marginBottom: 'var(--sp-4)' }}>
-          <div style={{ fontSize: 40, marginBottom: 8 }}>🎉</div>
-          <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--green)', marginBottom: 4 }}>Work submitted!</div>
-          <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 8 }}>
+          <div style={{ fontSize: 60, marginBottom: 'var(--sp-2)' }}>🎉</div>
+          <div style={{ fontWeight: 800, fontSize: 'var(--font-size-md)', color: 'var(--green)', marginBottom: 'var(--sp-1)' }}>Work submitted!</div>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)', marginBottom: 'var(--sp-2)' }}>
             The homeowner has 2 hours to approve or raise a dispute.
           </div>
-          <div style={{ fontSize: 13, color: 'var(--gray-600)', fontWeight: 600 }}>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-600)', fontWeight: 600 }}>
             Payment of {fmtCAD(job.workerPayoutCAD)} releases automatically after approval.
           </div>
         </div>
@@ -314,9 +314,9 @@ export default function ActiveJob() {
       {/* DISPUTED: admin reviewing */}
       {job.status === 'DISPUTED' && (
         <div className="card" style={{ textAlign: 'center', background: '#FFFBEB', border: '1px solid #FDE68A', marginBottom: 'var(--sp-4)' }}>
-          <div style={{ fontSize: 40, marginBottom: 8 }}>⚠️</div>
-          <div style={{ fontWeight: 800, fontSize: 16, color: '#D97706', marginBottom: 4 }}>Dispute in progress</div>
-          <div style={{ fontSize: 13, color: 'var(--gray-500)' }}>
+          <div style={{ fontSize: 60, marginBottom: 'var(--sp-2)' }}>⚠️</div>
+          <div style={{ fontWeight: 800, fontSize: 'var(--font-size-md)', color: '#D97706', marginBottom: 'var(--sp-1)' }}>Dispute in progress</div>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)' }}>
             The homeowner raised a dispute. Our admin team will review and reach out within 24 hours.
           </div>
         </div>
@@ -325,11 +325,11 @@ export default function ActiveJob() {
       {/* RELEASED / SETTLED */}
       {(job.status === 'RELEASED' || job.status === 'SETTLED') && (
         <div className="card" style={{ textAlign: 'center', background: '#F0FDF4', border: '1px solid #BBF7D0', marginBottom: 'var(--sp-4)' }}>
-          <div style={{ fontSize: 40, marginBottom: 8 }}>💰</div>
-          <div style={{ fontWeight: 800, fontSize: 16, color: 'var(--green)', marginBottom: 4 }}>
+          <div style={{ fontSize: 60, marginBottom: 'var(--sp-2)' }}>💰</div>
+          <div style={{ fontWeight: 800, fontSize: 'var(--font-size-md)', color: 'var(--green)', marginBottom: 'var(--sp-1)' }}>
             {job.status === 'SETTLED' ? 'Job settled' : 'Payment released'}
           </div>
-          <div style={{ fontSize: 13, color: 'var(--gray-600)', fontWeight: 600 }}>
+          <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-600)', fontWeight: 600 }}>
             {fmtCAD(job.workerPayoutCAD)} sent to your account.
           </div>
         </div>
@@ -338,17 +338,17 @@ export default function ActiveJob() {
       {/* Rate the Requester — shown once work is complete */}
       {RATEABLE_STATUSES.includes(job.status) && (
         <div className="card">
-          <h2 style={{ fontWeight: 700, fontSize: 15, marginBottom: 'var(--sp-4)' }}>Rate this homeowner</h2>
+          <h2 style={{ fontWeight: 700, fontSize: 'var(--font-size-base)', marginBottom: 'var(--sp-4)' }}>Rate this homeowner</h2>
 
           {ratingSubmitted ? (
             <div style={{ textAlign: 'center', padding: 'var(--sp-4) 0' }}>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>✓</div>
+              <div style={{ fontSize: 48, marginBottom: 'var(--sp-2)' }}>✓</div>
               <div style={{ fontWeight: 700, color: 'var(--green)' }}>Rating submitted — thanks!</div>
             </div>
           ) : (
             <>
               {/* Star widget */}
-              <div style={{ display: 'flex', gap: 6, marginBottom: 'var(--sp-3)' }}>
+              <div style={{ display: 'flex', gap: 'var(--sp-2)', marginBottom: 'var(--sp-3)' }}>
                 {[1, 2, 3, 4, 5].map(n => (
                   <button key={n} type="button"
                     onClick={() => setRatingStars(n)}
@@ -357,7 +357,7 @@ export default function ActiveJob() {
                     aria-label={`${n} star${n > 1 ? 's' : ''}`}
                     style={{
                       background: 'none', border: 'none', cursor: 'pointer',
-                      fontSize: 36, lineHeight: 1, padding: 2,
+                      fontSize: 54, lineHeight: 1, padding: 3,
                       color: n <= (ratingHover || ratingStars) ? '#F6AD55' : 'var(--gray-200)',
                       transition: 'color .1s, transform .1s',
                       transform: n <= (ratingHover || ratingStars) ? 'scale(1.15)' : 'scale(1)',
@@ -366,7 +366,7 @@ export default function ActiveJob() {
                 ))}
               </div>
               {(ratingHover || ratingStars) > 0 && (
-                <div style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 'var(--sp-3)' }}>
+                <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)', marginBottom: 'var(--sp-3)' }}>
                   {STAR_LABELS[ratingHover || ratingStars]}
                 </div>
               )}

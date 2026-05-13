@@ -317,7 +317,7 @@ export default function JobStatus() {
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
 
       {/* Breadcrumb */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'var(--sp-6)', fontSize: 14 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginBottom: 'var(--sp-6)', fontSize: 'var(--font-size-sm)' }}>
         <Link to="/requester/jobs" style={{ color: 'var(--gray-400)', textDecoration: 'none' }}>← My Jobs</Link>
         <span style={{ color: 'var(--gray-300)' }}>/</span>
         <span style={{ fontWeight: 600 }}>{job.jobId}</span>
@@ -325,34 +325,34 @@ export default function JobStatus() {
 
       {/* Status banner */}
       <div className="card" style={{ marginBottom: 'var(--sp-4)', background: 'linear-gradient(135deg, #1A6FDB 0%, #0F4FA8 100%)', color: '#fff' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--sp-2)' }}>
           <h1 style={{ fontSize: 'var(--text-lg)', fontWeight: 800 }}>Job Status</h1>
           <StatusPill status={job.status} labelOverrides={{ RELEASED: 'Worker Paid', SETTLED: 'Worker Paid' }} />
         </div>
-        <div style={{ opacity: .85, fontSize: 14 }}>{STATUS_DESC[job.status] ?? job.status}</div>
+        <div style={{ opacity: .85, fontSize: 'var(--font-size-sm)' }}>{STATUS_DESC[job.status] ?? job.status}</div>
       </div>
 
       {/* Timeline */}
       <div className="card" style={{ marginBottom: 'var(--sp-4)' }}>
-        <h2 style={{ fontWeight: 700, marginBottom: 'var(--sp-4)', fontSize: 15 }}>Timeline</h2>
+        <h2 style={{ fontWeight: 700, marginBottom: 'var(--sp-4)', fontSize: 'var(--font-size-base)' }}>Timeline</h2>
         {TIMELINE_STATES.map((state, i) => {
           const done   = i < timelineIdx
           const active = i === timelineIdx && !terminalStates.includes(job.status)
           return (
-            <div key={state} style={{ display: 'flex', gap: 12, marginBottom: i < TIMELINE_STATES.length - 1 ? 4 : 0 }}>
+            <div key={state} style={{ display: 'flex', gap: 'var(--sp-3)', marginBottom: i < TIMELINE_STATES.length - 1 ? 'var(--sp-1)' : 0 }}>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <div style={{
-                  width: 24, height: 24, borderRadius: '50%', flexShrink: 0,
+                  width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
                   background: done ? 'var(--green)' : active ? 'var(--blue)' : 'var(--gray-200)',
                   color: (done || active) ? '#fff' : 'var(--gray-400)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 'var(--font-size-xs)', fontWeight: 700,
                 }}>{done ? '✓' : i + 1}</div>
                 {i < TIMELINE_STATES.length - 1 && (
-                  <div style={{ width: 2, height: 28, background: done ? 'var(--green)' : 'var(--gray-200)', margin: '2px 0' }} />
+                  <div style={{ width: 2, height: 42, background: done ? 'var(--green)' : 'var(--gray-200)', margin: '3px 0' }} />
                 )}
               </div>
-              <div style={{ paddingTop: 2, paddingBottom: i < TIMELINE_STATES.length - 1 ? 16 : 0 }}>
-                <div style={{ fontWeight: active ? 700 : 600, fontSize: 14, color: active ? 'var(--blue)' : done ? 'var(--gray-600)' : 'var(--gray-400)' }}>
+              <div style={{ paddingTop: 'var(--sp-1)', paddingBottom: i < TIMELINE_STATES.length - 1 ? 'var(--sp-4)' : 0 }}>
+                <div style={{ fontWeight: active ? 700 : 600, fontSize: 'var(--font-size-sm)', color: active ? 'var(--blue)' : done ? 'var(--gray-600)' : 'var(--gray-400)' }}>
                   {TIMELINE_LABELS[state]}
                 </div>
               </div>
@@ -364,14 +364,14 @@ export default function JobStatus() {
       {/* Offers panel — POSTED / NEGOTIATING */}
       {showOffers && (
         <div className="card" style={{ marginBottom: 'var(--sp-4)' }}>
-          <h2 style={{ fontWeight: 700, marginBottom: 4, fontSize: 15 }}>Worker Offers</h2>
-          <p style={{ fontSize: 13, color: 'var(--gray-500)', marginBottom: 'var(--sp-4)' }}>
+          <h2 style={{ fontWeight: 700, marginBottom: 'var(--sp-1)', fontSize: 'var(--font-size-base)' }}>Worker Offers</h2>
+          <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)', marginBottom: 'var(--sp-4)' }}>
             Your opening offer: <strong>{fmtCents(job.postedPriceCents)}</strong>.
             Workers may accept or propose a different price.
           </p>
 
           {offers.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: 'var(--sp-5) 0', color: 'var(--gray-400)', fontSize: 14 }}>
+            <div style={{ textAlign: 'center', padding: 'var(--sp-5) 0', color: 'var(--gray-400)', fontSize: 'var(--font-size-sm)' }}>
               No offers yet — nearby workers have been notified.
             </div>
           ) : (
@@ -391,11 +391,11 @@ export default function JobStatus() {
                     padding: 'var(--sp-4)',
                     background: waitingOnMe ? 'var(--blue-light)' : '#fff',
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 'var(--sp-2)' }}>
                       <div>
-                        <div style={{ fontWeight: 700, fontSize: 15 }}>{workerName}</div>
+                        <div style={{ fontWeight: 700, fontSize: 'var(--font-size-base)' }}>{workerName}</div>
                         {offerWorker && (
-                          <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 2 }}>
+                          <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-500)', marginTop: 'var(--sp-1)' }}>
                             {'★'.repeat(Math.round(offerWorker.averageRating ?? 0))}
                             {'☆'.repeat(5 - Math.round(offerWorker.averageRating ?? 0))}
                             {' '}{(offerWorker.averageRating ?? 0).toFixed(1)} · {offerWorker.totalJobsCompleted ?? 0} jobs
@@ -403,19 +403,19 @@ export default function JobStatus() {
                         )}
                       </div>
                       <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontWeight: 700, fontSize: 17, color: 'var(--blue)' }}>{fmtCents(displayPrice)}</div>
-                        <div style={{ fontSize: 12, color: statusMeta.color, fontWeight: 600 }}>{statusMeta.label}</div>
+                        <div style={{ fontWeight: 700, fontSize: 'var(--font-size-md)', color: 'var(--blue)' }}>{fmtCents(displayPrice)}</div>
+                        <div style={{ fontSize: 'var(--font-size-xs)', color: statusMeta.color, fontWeight: 600 }}>{statusMeta.label}</div>
                       </div>
                     </div>
 
                     {offer.workerNote && (
-                      <div style={{ fontSize: 13, color: 'var(--gray-600)', fontStyle: 'italic', marginBottom: 8 }}>
+                      <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-600)', fontStyle: 'italic', marginBottom: 'var(--sp-2)' }}>
                         "{offer.workerNote}"
                       </div>
                     )}
 
                     {!canAct && (offer.status === 'OPEN' || offer.status === 'COUNTERED') && (
-                      <div style={{ fontSize: 12, color: 'var(--gray-400)' }}>Waiting for worker's response…</div>
+                      <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)' }}>Waiting for worker's response…</div>
                     )}
 
                     {canAct && (

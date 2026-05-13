@@ -27,7 +27,7 @@ function TrustBadge({ badgeId }) {
   if (!meta) return null
   return (
     <span title={meta.tooltip} style={{
-      fontSize: 12, fontWeight: 600, padding: '3px 10px', borderRadius: 20,
+      fontSize: 'var(--font-size-xs)', fontWeight: 600, padding: '5px 15px', borderRadius: 20,
       background: meta.bg, color: meta.color, border: `1px solid ${meta.color}`, cursor: 'default',
     }}>
       {meta.icon} {meta.label}
@@ -67,29 +67,29 @@ function WorkerProfileContent({ worker, jobRatings = [] }) {
       <div className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-3)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-4)' }}>
           <div style={{
-            width: 64, height: 64, borderRadius: '50%',
+            width: 96, height: 96, borderRadius: '50%',
             background: 'var(--blue)', color: '#fff',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 22, fontWeight: 700, flexShrink: 0,
+            fontSize: 'var(--font-size-xl)', fontWeight: 700, flexShrink: 0,
           }}>
             {initials}
           </div>
           <div>
-            <div style={{ fontWeight: 800, fontSize: 20 }}>{displayName}</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 2 }}>
-              <Stars rating={avgRating} size={16} />
-              <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--gray-700)' }}>
+            <div style={{ fontWeight: 800, fontSize: 'var(--font-size-lg)' }}>{displayName}</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)', marginTop: 'var(--sp-1)' }}>
+              <Stars rating={avgRating} size={24} />
+              <span style={{ fontSize: 'var(--font-size-sm)', fontWeight: 600, color: 'var(--gray-700)' }}>
                 {avgRating > 0 ? avgRating.toFixed(1) : 'No rating yet'}
               </span>
             </div>
-            <div style={{ fontSize: 13, color: 'var(--gray-500)', marginTop: 2 }}>
+            <div style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-500)', marginTop: 'var(--sp-1)' }}>
               {jobsCompleted} job{jobsCompleted !== 1 ? 's' : ''} completed
             </div>
           </div>
         </div>
 
         {badges.length > 0 && (
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 'var(--sp-2)', flexWrap: 'wrap' }}>
             {badges.map(id => <TrustBadge key={id} badgeId={id} />)}
           </div>
         )}
@@ -98,24 +98,24 @@ function WorkerProfileContent({ worker, jobRatings = [] }) {
       {/* Your review of this worker */}
       {myReview && (
         <div className="card" style={{ background: 'var(--blue-light)', border: '1.5px solid var(--blue)' }}>
-          <h3 style={{ fontWeight: 700, fontSize: 14, marginBottom: 'var(--sp-3)', color: 'var(--blue)' }}>
+          <h3 style={{ fontWeight: 700, fontSize: 'var(--font-size-sm)', marginBottom: 'var(--sp-3)', color: 'var(--blue)' }}>
             Your Review
           </h3>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-            <Stars rating={myReview.stars} size={16} />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--sp-2)' }}>
+            <Stars rating={myReview.stars} size={24} />
             {myReview.createdAt && (
-              <span style={{ fontSize: 12, color: 'var(--gray-400)' }}>{fmtDate(myReview.createdAt)}</span>
+              <span style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-400)' }}>{fmtDate(myReview.createdAt)}</span>
             )}
           </div>
           {myReview.reviewText ? (
-            <p style={{ fontSize: 14, color: 'var(--gray-700)', lineHeight: 1.5, margin: '0 0 4px' }}>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-700)', lineHeight: 1.5, margin: `0 0 var(--sp-1)` }}>
               "{myReview.reviewText}"
             </p>
           ) : (
-            <p style={{ fontSize: 13, color: 'var(--gray-400)', fontStyle: 'italic' }}>No written review</p>
+            <p style={{ fontSize: 'var(--font-size-sm)', color: 'var(--gray-400)', fontStyle: 'italic' }}>No written review</p>
           )}
           {myReview.wouldRepeat != null && (
-            <div style={{ fontSize: 12, color: 'var(--gray-500)', marginTop: 6 }}>
+            <div style={{ fontSize: 'var(--font-size-xs)', color: 'var(--gray-500)', marginTop: 'var(--sp-2)' }}>
               {myReview.wouldRepeat ? '👍 Would hire again' : '👎 Would not hire again'}
             </div>
           )}
@@ -134,7 +134,7 @@ export default function WorkerProfile() {
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
       <button
         onClick={() => navigate(-1)}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: 'var(--gray-400)', marginBottom: 'var(--sp-5)', padding: 0 }}
+        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 'var(--font-size-sm)', color: 'var(--gray-400)', marginBottom: 'var(--sp-5)', padding: 0 }}
       >
         ← Back
       </button>
