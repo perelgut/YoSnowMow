@@ -32,6 +32,7 @@ export default function RequesterLayout() {
             { to: '/requester', label: 'Home', end: true },
             { to: '/requester/post-job', label: 'Post a Job' },
             { to: '/requester/jobs', label: 'My Jobs' },
+            { to: '/requester/property', label: 'My Property' },
           ].map(({ to, label, end }) => (
             <NavLink key={to} to={to} end={end} style={({ isActive }) => ({
               fontWeight: 600, fontSize: 14, color: isActive ? '#1A6FDB' : '#4A5568',
@@ -49,11 +50,13 @@ export default function RequesterLayout() {
             color: 'var(--gray-600)',
           }}>🔔</button>
           <span style={{ fontSize: 13, color: 'var(--gray-600)' }} className="hide-mobile">{displayName}</span>
-          <div style={{
-            width: 34, height: 34, borderRadius: '50%', background: '#1A6FDB',
-            color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 13, fontWeight: 700,
-          }}>{initials}</div>
+          <NavLink to="/requester/property" style={{ textDecoration: 'none' }}>
+            <div style={{
+              width: 34, height: 34, borderRadius: '50%', background: '#1A6FDB',
+              color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+            }}>{initials}</div>
+          </NavLink>
           <button onClick={handleSignOut} style={{
             background: 'none', border: '1px solid var(--gray-300)', borderRadius: 6,
             padding: '4px 10px', fontSize: 12, color: 'var(--gray-600)', cursor: 'pointer',
@@ -76,6 +79,7 @@ export default function RequesterLayout() {
           { to: '/requester', icon: '🏠', label: 'Home', end: true },
           { to: '/requester/post-job', icon: '➕', label: 'Post' },
           { to: '/requester/jobs', icon: '📋', label: 'Jobs' },
+          { to: '/requester/property', icon: '📸', label: 'Property' },
         ].map(({ to, icon, label, end }) => (
           <NavLink key={to} to={to} end={end} style={({ isActive }) => ({
             flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center',

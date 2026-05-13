@@ -10,6 +10,7 @@ import JobList from './pages/requester/JobList'
 import JobStatus from './pages/requester/JobStatus'
 import RateWorker from './pages/requester/RateWorker'
 import WorkerProfile from './pages/requester/WorkerProfile'
+import Property from './pages/requester/Property'
 
 import WorkerEarnings from './pages/worker/Earnings'
 import JobRequest from './pages/worker/JobRequest'
@@ -70,6 +71,7 @@ export default function App() {
             <Route path="jobs/:id" element={<JobStatus />} />
             <Route path="jobs/:id/rate" element={<RateWorker />} />
             <Route path="workers/:workerId" element={<WorkerProfile />} />
+            <Route path="property" element={<Property />} />
           </Route>
 
           <Route path="/worker" element={<WorkerLayout />}>
