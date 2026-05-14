@@ -5390,3 +5390,150 @@ The diagnosis required several iterations:
 | `frontend/package-lock.json` | Lockfile updated to reflect firebase v10 |
 | `firebase/package.json` | Emulator scripts now pass `--project yosnowmow-dev` |
 | `firebase/firebase.json` | `singleProjectMode` set to `true` |
+
+---
+
+## 2026-05-13 — Feature: Photo Upload — Property Photos, PostJob Photos, Worker Photo View
+
+### Summary
+
+Implemented the full photo upload feature (Phase 0 mock) across all three affected areas:
+- **My Property page** — Requesters manage up to 5 saved property photos tied to their account
+- **PostJob Step 3** — Two-section photo UI (saved property photos + per-request photos), minimum 1 photo validation
+- **Worker job cards** — Thumbnail strip on each job card plus full-size navigable photo modal
+
+All storage is browser-side (`URL.createObjectURL`). No backend or Firebase Storage in Phase 0.
+
+### Design and Brainstorming
+
+Before implementation, a brainstorming session was conducted using the `superpowers:brainstorming` skill with a visual companion (browser mockups). Key decisions made during the session:
+
+**Photo placement in PostJob:** Three options were shown visually. User chose Option B — photos merged directly into Step 3 ("When & Details"), below the Notes field. This keeps the step count at 4 (no new step).
+
+**Max photos:** 5 total per job (later refined to: up to 5 saved property photos, all auto-selected; up to 3 additional per-request photos).
+
+**Worker view:** Option C — thumbnails on each job card AND full-size modal on tap.
+
+**Requester's JobStatus page:** Photos are NOT shown post-submission. Workers only.
+
+**Saved property photos scope expansion (user-requested mid-session):** Requesters can register up to 5 durable "property photos" attached to their account. These appear in PostJob Step 3 (all pre-selected by default, individually deselectable). Managed via a new `/requester/property` page accessible from: bottom nav tab, desktop nav link, avatar/profile link in header, and "Manage" shortcut link in PostJob Step 3.
+
+Design doc saved to: `docs/superpowers/specs/2026-05-13-photo-upload-design.md`
+Implementation plan saved to: `docs/superpowers/plans/2026-05-13-photo-upload.md`
+
+### Implementation -- Task 1: MockStateContext (commit 03c990f)
+
+**File:** `frontend/src/context/MockStateContext.jsx`
+
+Added two inline SVG data URI constants (`DEMO_PHOTO_1`, `DEMO_PHOTO_2`) as demo seed photos. They are car/house silhouette shapes rendered via SVG — no external files, no network requests.
+
+Changed `SR-2026-001` (the mock seed job) to include `photoUrls: [DEMO_PHOTO_1, DEMO_PHOTO_2]` so Workers immediately see the photo strip in the prototype without needing to post a new job.
+
+Added `const [propertyPhotos, setPropertyPhotos] = useState([])` inside `MockStateProvider`. Exposed in provider value: `mockUser: { ...MOCK_USER, propertyPhotos }` and `setPropertyPhotos`. This keeps `MOCK_USER` as a pure constant and layers in the mutable `propertyPhotos` array via spread at render time.
+
+### Implementation -- Task 2: Property.jsx (commit 3bf582c, amended twice for review fixes)
+
+**File:** `frontend/src/pages/requester/Property.jsx` (new file)
+
+The My Property page lets Requesters manage up to 5 saved property photos.
+
+Key implementation details:
+- `MAX_PHOTOS = 5`, `MAX_SIZE_BYTES = 10 * 1024 * 1024` (10 MB)
+- Hidden `<input type="file" accept="image/*">` triggered via `useRef`
+- `handleFileChange`: validates each file size; creates `URL.createObjectURL(file)` for valid files; appends to state, sliced to `MAX_PHOTOS`
+- `removePhoto(index)`: calls `URL.revokeObjectURL(prev[index])` before filtering — prevents memory leaks
+- Grid renders filled slots (96x96 thumbnail + X button) followed by an Add Photo dashed button (hidden when 5 slots filled)
+- Counter: N of 5 slots used -- JPG, PNG, WEBP -- max 10 MB each
+- Error displayed inline below grid using `var(--red)` (not hardcoded hex)
+- All border radii use `var(--radius-lg)` (not hardcoded numeric pixels)
+
+**Review fixes applied:**
+1. Error color was `#c0392b` changed to `var(--red)`
+2. Three instances of `borderRadius: 10` changed to `var(--radius-lg)`
+
+### Implementation -- Task 3: Route + Nav (commit 75af74f)
+
+**Files:** `frontend/src/App.jsx`, `frontend/src/layouts/RequesterLayout.jsx`
+
+Added `<Route path="property" element={<Property />} />` inside the `/requester` route block.
+
+In RequesterLayout: added Property entry to desktop nav and mobile bottom nav; wrapped avatar div in NavLink to `/requester/property`.
+
+### Implementation -- Task 4: PostJob Step 3 Photo UI (commit dbfe76e, amended after 3 review fixes)
+
+**File:** `frontend/src/pages/requester/PostJob.jsx`
+
+This was the most complex task — integrating two photo sub-sections into Step 3, validation gating progress to Step 4, and passing combined `photoUrls` to `addJob()` on submit.
+
+**State added:**
+- `selectedPropPhotos: null | Set<string>` — null means not yet initialized (all selected by default); a Set holds actually-selected URLs
+- `reqPhotos: Array<{ url, name }>` — per-request uploaded photos
+- `photoError: string | null` — inline validation message
+
+**Key functions:**
+- `goToStep3()`: initialises `selectedPropPhotos` as a full Set of all `mockUser.propertyPhotos` on first visit. Idempotent.
+- `togglePropPhoto(url)`: adds/removes URL from `selectedPropPhotos` Set
+- `handleReqPhotoChange(e)`: validates each file <= 10 MB; skips oversized; creates object URLs; appends to `reqPhotos`, capped at 3
+- `removeReqPhoto(index)`: revokes object URL, filters array
+- `goToStep4()`: validates totalPhotoCount >= 1; sets `photoError` if not; advances to Step 4
+
+`totalPhotoCount` uses `selectedPropPhotos.size` when initialized, falls back to `mockUser.propertyPhotos.length` when null. Combined with `reqPhotos.length`.
+
+Object URL cleanup: a useEffect with empty dep array revokes all per-request photo URLs when PostJob unmounts.
+
+Sub-section A (saved property photos): only renders when `mockUser.propertyPhotos.length > 0`. "Manage" link uses `target="_blank"` to preserve PostJob form state. Thumbnails show blue checkmark badge (selected) or grey X badge with 45% opacity (deselected).
+
+Sub-section B (per-request photos): up to 3. Add Photo button disappears once 3 slots used. Supports `multiple` file selection.
+
+Live footer counter shows `N photo(s) will be included with this job` below the Review button.
+
+Submit combines selected property photos and per-request photos into `photoUrls` array passed to `addJob()`.
+
+**Review fixes applied:**
+1. `color: var(--gray-700)` changed to `var(--gray-600)` in two places (--gray-700 token does not exist; tokens go 600->800)
+2. `goToStep4` null-fallback used `0` instead of `mockUser.propertyPhotos.length` — would cause false validation block. Fixed.
+3. No useEffect cleanup for per-request photo object URLs — added unmount cleanup effect.
+
+**Note on --gray-700:** Pre-existing uses also appear in Earnings.jsx, Register.jsx, Dashboard.jsx, WorkerProfile.jsx. Separate cleanup task.
+
+### Implementation -- Task 5: JobRequest Photo Strip + Modal (commits a5ecfb2, 9199c76, 29771f5)
+
+**File:** `frontend/src/pages/worker/JobRequest.jsx`
+
+**Photo strip:** Inserted between notesForWorker block and action buttons. Only renders when `job.photoUrls?.length > 0`. Shows first 5 thumbnails (56x56 px, object-fit: cover). If >5 photos, shows overflow chip "+N more" that opens modal at index 5.
+
+**Full-size modal:** Uses existing `Modal` component. `photoModal` state: `null | { photos: string[], index: number }`. Shows selected photo full-size (max-height: 60vh, object-fit: contain) on dark background. Prev/Next navigation with counter "X / N".
+
+**Review fixes applied:**
+1. Conditional cursor on disabled nav buttons (commit 9199c76): Prev had `cursor: pointer` unconditionally — fixed to `cursor: photoModal.index === 0 ? default : pointer`. Same for Next.
+2. Token consistency (commit 29771f5): Nav buttons used `color: #fff` — changed to `color: var(--white)` since that token exists and is identical.
+
+Note: `#111` (modal background) and `#ccc` (counter text) remain hardcoded — no equivalent tokens exist for lightbox-specific dark overlay colours. Acceptable in Phase 0.
+
+### Files Changed
+
+| File | Change |
+|---|---|
+| `frontend/src/context/MockStateContext.jsx` | `propertyPhotos` state + `setPropertyPhotos`; demo SVG seed photos on SR-2026-001 |
+| `frontend/src/pages/requester/Property.jsx` | **New** — My Property photo management page |
+| `frontend/src/App.jsx` | Register `/requester/property` route |
+| `frontend/src/layouts/RequesterLayout.jsx` | Property tab in bottom nav; My Property in desktop nav; avatar to Property link |
+| `frontend/src/pages/requester/PostJob.jsx` | Two-section photo UI in Step 3; validation; live counter; `photoUrls` on submit |
+| `frontend/src/pages/worker/JobRequest.jsx` | Photo thumbnail strip on job cards; full-size navigable photo modal |
+| `docs/superpowers/specs/2026-05-13-photo-upload-design.md` | **New** — Design spec |
+| `docs/superpowers/plans/2026-05-13-photo-upload.md` | **New** — Implementation plan |
+| `.gitignore` | Added `.superpowers/` (brainstorming tool working directory) |
+
+### Commits
+
+| Commit | Description |
+|---|---|
+| `6ee2f23` | docs: photo upload design spec + add .superpowers/ to .gitignore |
+| `2f011e4` | docs: photo upload implementation plan |
+| `03c990f` | feat: add propertyPhotos state to MockStateContext; seed demo photos on SR-2026-001 |
+| `3bf582c` | feat: add My Property page for managing up to 5 saved property photos |
+| `75af74f` | feat: register /requester/property route and add Property to requester nav |
+| `dbfe76e` | feat: add two-section photo upload to PostJob Step 3 with validation |
+| `a5ecfb2` | feat: add photo thumbnail strip and full-size modal to worker job cards |
+| `9199c76` | fix: conditional cursor on disabled Prev/Next photo modal buttons |
+| `29771f5` | fix: use var(--white) token for photo modal nav button color |
