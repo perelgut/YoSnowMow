@@ -286,6 +286,15 @@ export const approveJob = (jobId) =>
   api.post(`/api/jobs/${jobId}/approve`).then(r => r.data)
 
 /**
+ * Sandbox-only: simulates a successful Stripe escrow payment (AGREED → ESCROW_HELD)
+ * without going through the real Stripe flow.
+ * @param {string} jobId
+ * @returns {Promise<Job>}
+ */
+export const simulatePayment = (jobId) =>
+  api.post(`/api/jobs/${jobId}/simulate-payment`).then(r => r.data)
+
+/**
  * @deprecated Use respondToOffer / getOffersForJob instead (Phase A redesign).
  * Accept or decline a pending job offer.
  * @param {string} requestId  Composite ID: "{jobId}_{workerId}"

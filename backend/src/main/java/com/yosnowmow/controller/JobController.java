@@ -289,6 +289,44 @@ public class JobController {
         return ResponseEntity.ok(jobService.getJob(jobId));
     }
 
+    // ── Sandbox / Phase-0 helpers ─────────────────────────────────────────────
+
+    /**
+     * Simulates a successful escrow payment without Stripe — for sandbox testing only.
+     *
+     * Transitions the job directly from AGREED → ESCROW_HELD.  This endpoint bypasses
+     * the normal Stripe PaymentIntent flow so the full job lifecycle can be exercised
+     * without payment credentials.
+     *
+     * The caller must be the Requester who owns the job.
+     *
+     * TODO: remove or gate behind a dev-mode flag before production launch.
+     *
+     * @param jobId  Firestore document ID of the job
+     * @param caller authenticated requester
+     * @return the updated Job (status = ESCROW_HELD)
+     */
+    @PostMapping("/{jobId}/simulate-payment")
+    @RequiresRole("requester")
+    public ResponseEntity<Job> simulatePayment(
+            @PathVariable String jobId,
+            @AuthenticationPrincipal AuthenticatedUser caller) {
+
+        Job job = jobService.getJob(jobId);
+        if (!job.getRequesterId().equals(caller.uid()) && !caller.hasRole("admin")) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "You do not own this job");
+        }
+        if (!"AGREED".equals(job.getStatus())) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Job is not awaiting payment (status: " + job.getStatus() + ")");
+        }
+
+        jobService.transitionStatus(jobId, "ESCROW_HELD", caller.uid(), null);
+        return ResponseEntity.ok(jobService.getJob(jobId));
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
 
     /** Worker address visibility: hide until escrow is held. */

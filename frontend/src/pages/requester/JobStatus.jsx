@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import {
   getJob, cancelJob, disputeJob,
-  getOffersForJob, respondToOffer, approveJob,
+  getOffersForJob, respondToOffer, approveJob, simulatePayment,
   getWorkerPublicProfile, getRatings,
 } from '../../services/api'
 import StatusPill from '../../components/StatusPill'
@@ -174,6 +174,19 @@ export default function JobStatus() {
     } catch (err) {
       console.error('[JobStatus] Cancel failed:', err)
       alert('Cancel failed — please try again.')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function handleSimulatePayment() {
+    setSubmitting(true)
+    try {
+      const updated = await simulatePayment(id)
+      setJob(updated)
+    } catch (err) {
+      console.error('[JobStatus] Simulate payment failed:', err)
+      alert('Payment simulation failed — please try again.')
     } finally {
       setSubmitting(false)
     }
@@ -464,9 +477,10 @@ export default function JobStatus() {
           </p>
           <button
             className="btn btn-primary btn-lg btn-full"
-            onClick={() => alert('Stripe payment integration is coming in Phase C.')}
+            disabled={submitting}
+            onClick={handleSimulatePayment}
           >
-            Pay & Hold Escrow
+            {submitting ? 'Processing…' : 'Pay & Hold Escrow'}
           </button>
         </div>
       )}
